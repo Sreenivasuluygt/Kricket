@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Cricket</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
+    <string name="sign_up">Sign up</string>
+    <string name="name">Name</string>
+    <string name="create_match">+Create match</string>
+    <string name="create_match_1">Create match</string>
+</resources>

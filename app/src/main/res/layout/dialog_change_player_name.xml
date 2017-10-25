@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_heading_dialog_change_player_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_10"
+        android:gravity="center"
+        android:minHeight="@dimen/dp_30"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/sp_15" />
+
+    <EditText
+        android:id="@+id/et_name_dialog_change_player_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_30"
+        android:minHeight="@dimen/dp_35"
+        android:textSize="@dimen/sp_14" />
+    <Button
+        android:layout_margin="@dimen/dp_20"
+        android:id="@+id/btn_ok_dialog_change_player_name"
+        android:textSize="@dimen/sp_15"
+        android:background="@color/btnColor"
+        android:textColor="@color/white"
+        android:text="OK"
+        android:layout_gravity="center"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

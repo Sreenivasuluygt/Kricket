@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/appBackground"
+    android:orientation="vertical"
+    tools:context="obu.ckt.cricket.LoginActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_20"
+            android:padding="@dimen/dp_35"
+            android:src="@mipmap/ic_logo" />
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_weight="0.7"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_email_login"
+            style="@style/login_edt"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress" />
+
+        <EditText
+            android:id="@+id/et_password_login"
+            style="@style/login_edt"
+            android:layout_marginTop="@dimen/dp_15"
+            android:hint="@string/password"
+            android:inputType="textWebPassword" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_log_login"
+            style="@style/login_edt"
+            android:layout_marginTop="@dimen/dp_15"
+            android:background="@color/btnColor"
+            android:elevation="@dimen/dp_5"
+            android:text="@string/login"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold"
+            app:elevation="@dimen/dp_5" />
+
+        <TextView
+            android:textSize="@dimen/sp_16"
+            android:id="@+id/tv_signup_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginLeft="@dimen/dp_35"
+            android:layout_marginRight="@dimen/dp_35"
+            android:layout_marginTop="@dimen/dp_15"
+            android:text="Sign up"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:textSize="@dimen/sp_16"
+            android:id="@+id/tv_skip_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/dp_35"
+            android:layout_marginRight="@dimen/dp_35"
+            android:layout_marginTop="@dimen/dp_35"
+            android:text="Skip"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</LinearLayout>

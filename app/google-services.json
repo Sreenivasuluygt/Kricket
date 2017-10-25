@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "546938953164",
+    "project_id": "cricket-c1cc1"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:546938953164:android:5f90932fc1941ec1",
+        "android_client_info": {
+          "package_name": "obu.ckt.cricket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "546938953164-tqh4l6jckat40d68q85t6tesrgkefiej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "obu.ckt.cricket",
+            "certificate_hash": "b21e4e88479fe516d6c7b168fc5ff50df3b738d5"
+          }
+        },
+        {
+          "client_id": "546938953164-ngtavsoqa11ma7rpuj4vf6q0h0og7l1o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyyg4hS2GtmfGfqJAQJQMbwzU78xBo8BM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
