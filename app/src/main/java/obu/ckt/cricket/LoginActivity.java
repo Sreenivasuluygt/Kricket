@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     DatabaseHandler db;
     private EditText etEmail, etPassword;
-    private TextView tvSignUp,tvSkip;
+    private TextView tvSignUp, tvSkip;
     private Button btnLogin;
     private SharePref prefs;
     private DataLayer dLayer;
@@ -98,11 +98,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void skipLogin() {
         long userId = 0;
-        String UDID=Utils.udid(LoginActivity.this);
+        String UDID = Utils.udid(LoginActivity.this);
         if (!db.isEmailExists(UDID)) {
             userId = db.insertUser(UDID, UDID, UDID);
-        }
-        else userId= Long.parseLong(db.getUserId(UDID));
+        } else userId = Long.parseLong(db.getUserId(UDID));
         User user = new User(String.valueOf(userId), UDID, UDID, UDID);
         dLayer.saveUser(prefs, user);
         openHomeActivity();
@@ -128,7 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         @Override
                         public void failure() {
-                            Toast.makeText(getApplicationContext(), "Invalid login details", Toast.LENGTH_SHORT).show();
+                            Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
                         }
                     });
     }
@@ -168,7 +167,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             long userId = 0;
             if (!db.isEmailExists(acct.getEmail())) {
                 userId = db.insertUser(acct.getDisplayName(), acct.getEmail(), acct.getEmail());
-            }
+            } else userId = Long.parseLong(db.getUserId(acct.getEmail()));
             User user = new User(String.valueOf(userId), acct.getDisplayName(), acct.getEmail(), acct.getEmail());
             dLayer.saveUser(prefs, user);
             openHomeActivity();

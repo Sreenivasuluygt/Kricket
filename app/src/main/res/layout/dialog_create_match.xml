@@ -33,6 +33,7 @@
         android:inputType="text" />
 
     <EditText
+        android:visibility="gone"
         android:id="@+id/et_toss_create"
         style="@style/login_edt"
         android:layout_marginTop="@dimen/dp_20"

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import obu.ckt.cricket.R;
+import obu.ckt.cricket.comon.Utils;
 import obu.ckt.cricket.model.Match;
 
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.Holder> {
@@ -43,44 +44,44 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.Holder> {
     public void onBindViewHolder(Holder holder, int position) {
         try {
             final Match match = list.get(position);
-            holder.tvName.setText((match.teamA.substring(0, 3) + " V/S " + match.teamB.substring(0, 3)).toUpperCase());
+            holder.tvName.setText((Utils.getTeamName(match.teamA) + " V/S " + Utils.getTeamName(match.teamB)));
             JSONObject jObj = new JSONObject(match.json);
             String text = "";
             switch (match.result.toLowerCase()) {
                 case "created":
-                    holder.tvScores.setText( jObj.getString("1stBatting").toUpperCase().substring(0, 3) + ":" + "0/0");
+                    holder.tvScores.setText(Utils.getTeamName(jObj.getString("1stBatting")) + ":" + "0/0");
                     holder.tvStatus.setText(match.result);
                     break;
                 case "firstinnings":
-                    text =  jObj.getString("1stBatting").toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("1stInnings").getString("score");
+                    text = Utils.getTeamName(jObj.getString("1stBatting")) + ":" + jObj.getJSONObject("1stInnings").getString("score");
                     holder.tvScores.setText(text);
                     holder.tvStatus.setText("Progress");
                     break;
                 case "secondinnings":
                     if (match.teamA.equals(jObj.getString("1stBatting"))) {
-                        text = match.teamB.toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
+                        text = Utils.getTeamName(match.teamB) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
                     } else
-                        text = match.teamA.toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
-                    text =  jObj.getString("1stBatting").toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("1stInnings").getString("score")
+                        text = Utils.getTeamName(match.teamA) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
+                    text = Utils.getTeamName(jObj.getString("1stBatting")) + ":" + jObj.getJSONObject("1stInnings").getString("score")
                             + " " + text;
                     holder.tvScores.setText(text);
                     holder.tvStatus.setText("Progress");
                     break;
                 case "completed":
                     if (match.teamA.equals(jObj.getString("1stBatting"))) {
-                        text = match.teamB.toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
+                        text = Utils.getTeamName(match.teamB) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
                     } else
-                        text = match.teamA.toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
-                    text =  jObj.getString("1stBatting").toUpperCase().substring(0, 3) + ":" + jObj.getJSONObject("1stInnings").getString("score")
+                        text = Utils.getTeamName(match.teamA) + ":" + jObj.getJSONObject("2ndInnings").getString("score");
+                    text = Utils.getTeamName(jObj.getString("1stBatting")) + ":" + jObj.getJSONObject("1stInnings").getString("score")
                             + " " + text;
                     holder.tvScores.setText(text);
-                    holder.tvStatus.setText("Won : " + jObj.getString("won").toUpperCase().substring(0, 3));
+                    holder.tvStatus.setText("Won : " + Utils.getTeamName(jObj.getString("won")));
                     break;
             }
             holder.llClick.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClick.onClick(list.get(list.indexOf(match)).matchId);
+                    itemClick.onClick(list.get(list.indexOf(match)).matchId, list.get(list.indexOf(match)).result);
                 }
             });
         } catch (Exception e) {
@@ -107,6 +108,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.Holder> {
     }
 
     public interface ItemClick {
-        void onClick(String matchId);
+        void onClick(String matchId, String status);
     }
 }

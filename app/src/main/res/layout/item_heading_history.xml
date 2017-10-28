@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_50"
+    android:minHeight="@dimen/dp_40"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_centerInParent="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/tv_innings_item_score"
+        style="@style/batsmen_txtView"
+        android:layout_width="wrap_content"
+        android:paddingLeft="@dimen/dp_10"
+        android:text="Innings : 1st  (AUS)"
+        android:textColor="@color/textColor"
+        android:textSize="@dimen/sp_15"
+        android:textStyle="bold" />
+
+</RelativeLayout>

@@ -4,9 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context="obu.ckt.cricket.MatchActivity">
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -55,7 +53,7 @@
                     android:layout_weight="0.5"
                     android:gravity="end"
                     android:paddingLeft="@dimen/dp_5"
-                    android:text="Innings : 1st  (AUS)"
+                    android:text=""
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/sp_15"
                     android:textStyle="bold" />
@@ -63,40 +61,64 @@
 
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
                 android:weightSum="1">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="0.4"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/batsmen_txtView"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:gravity="center|start"
+                        android:text="Batsmen" />
+                    <TextView
+                        android:id="@+id/tv_changeStriker_match"
+                        style="@style/batsmen_txtView"
+                        android:layout_weight="0.35"
+                        android:gravity="center|start"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:text="Change Striker"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+
 
                 <TextView
                     style="@style/batsmen_txtView"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.425"
-                    android:gravity="center|start"
-                    android:text="Batsmen" />
-
-                <TextView
-                    style="@style/batsmen_txtView"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:gravity="center"
-                    android:text="Runs" />
-
-                <TextView
-                    style="@style/batsmen_txtView"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
-                    android:gravity="center"
-                    android:text="Balls" />
-
-                <TextView
-                    android:id="@+id/tv_changeStriker_match"
-                    style="@style/batsmen_txtView"
                     android:layout_weight="0.15"
                     android:gravity="center"
-                    android:text="Change Striker"
-                    android:textSize="10sp" />
+                    android:text="R's" />
+
+                <TextView
+                    style="@style/batsmen_txtView"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="B's" />
+
+                <TextView
+                    style="@style/batsmen_txtView"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="4's" />
+
+                <TextView
+                    style="@style/batsmen_txtView"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="6's" />
+
+
 
             </LinearLayout>
 
@@ -117,14 +139,14 @@
                 <TextView
                     android:id="@+id/tv_player1_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.4225"
+                    android:layout_weight="0.4"
                     android:text="Player1"
                     android:textColor="@color/textColor" />
 
                 <TextView
                     android:id="@+id/tv_player1Runs_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -132,7 +154,23 @@
                 <TextView
                     android:id="@+id/tv_player1Balls_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tv_p1s4s_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tv_p1s6s_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_weight="0.15"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -151,14 +189,14 @@
                 <TextView
                     android:id="@+id/tv_player2_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.4225"
+                    android:layout_weight="0.4"
                     android:text="Player2"
                     android:textColor="@color/textColor" />
 
                 <TextView
                     android:id="@+id/tv_player2Runs_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -166,7 +204,23 @@
                 <TextView
                     android:id="@+id/tv_player2Balls_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tv_p2s4s_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_weight="0.15"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/textColor" />
+
+                <TextView
+                    android:id="@+id/tv_p26s_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_weight="0.15"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -200,7 +254,7 @@
                     android:layout_weight="0.4"
                     android:gravity="start"
                     android:paddingLeft="@dimen/dp_5"
-                    android:text="100/0"
+                    android:text="0/0"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/sp_18"
                     android:textStyle="bold" />
@@ -231,42 +285,51 @@
                 android:background="@color/appBackground" />
 
             <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
                 android:weightSum="1">
+                <LinearLayout
+                    android:layout_weight="0.4"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/batsmen_txtView"
+                        android:layout_height="match_parent"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:text="Bowler" />
+                    <TextView
+                        android:id="@+id/tv_changeBowler_match"
+                        style="@style/batsmen_txtView"
+                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:enabled="false"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/dp_15"
+                        android:text="Change Bowler"
+                        android:textSize="8sp" />
+                </LinearLayout>
+
+
 
                 <TextView
                     style="@style/batsmen_txtView"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.4225"
-                    android:gravity="center|start"
-                    android:text="Bowler" />
-
-                <TextView
-                    style="@style/batsmen_txtView"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="Overs" />
 
                 <TextView
                     style="@style/batsmen_txtView"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="Runs" />
 
-                <TextView
-                    android:id="@+id/tv_changeBowler_match"
-                    style="@style/batsmen_txtView"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.15"
-                    android:enabled="false"
-                    android:gravity="center"
-                    android:text="Change \nBowler"
-                    android:textSize="10sp" />
+
 
             </LinearLayout>
 
@@ -287,14 +350,14 @@
                 <TextView
                     android:id="@+id/tv_bowlerName_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.4225"
+                    android:layout_weight="0.4"
                     android:text="Player1"
                     android:textColor="@color/textColor" />
 
                 <TextView
                     android:id="@+id/tv_bowlerOvers_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -302,7 +365,7 @@
                 <TextView
                     android:id="@+id/tv_bowlerRuns_match"
                     style="@style/batsmen_txtView"
-                    android:layout_weight="0.2"
+                    android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/textColor" />
@@ -329,7 +392,6 @@
                 android:layout_marginLeft="@dimen/dp_15">
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/lbl_last_match"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -337,15 +399,16 @@
                     android:gravity="center"
                     android:text="This over:"
                     android:textColor="@color/textHeading"
-                    android:textSize="@dimen/sp_15" />
+                    android:textSize="@dimen/sp_15"
+                    android:visibility="gone" />
 
                 <TextView
-                    android:paddingStart="@dimen/dp_10"
                     android:id="@+id/tv_thisOver_match"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/dp_7"
                     android:gravity="center"
+                    android:paddingStart="@dimen/dp_10"
                     android:textColor="@color/textHeading"
                     android:textSize="@dimen/sp_13" />
 
@@ -613,10 +676,7 @@
                 style="@style/run_txtView"
                 android:layout_margin="@dimen/dp_5"
                 android:gravity="center"
-                android:paddingBottom="@dimen/dp_10"
-                android:text="."
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:text="0" />
 
             <TextView
                 android:id="@+id/tv_one_match"
@@ -647,7 +707,8 @@
                 style="@style/run_txtView"
                 android:layout_margin="5dp"
                 android:background="@drawable/create_match"
-                android:text="5" />
+                android:text="5"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_six_match"

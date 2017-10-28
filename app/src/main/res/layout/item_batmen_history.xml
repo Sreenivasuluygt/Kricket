@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/dp_15"
+    android:layout_marginLeft="@dimen/dp_15"
+    android:layout_marginStart="@dimen/dp_15"
+    android:minHeight="@dimen/dp_40"
+    android:orientation="horizontal"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/tv_batsmenName_item"
+        style="@style/batsmen_txtView"
+        android:layout_weight="0.4"
+        android:text="Batsmen"
+        android:gravity="center|start"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/tv_batsmenRuns_item"
+        style="@style/batsmen_txtView"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:text="R"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/tv_batsmenBalls_item"
+        style="@style/batsmen_txtView"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:text="B"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/tv_batsmen4s_item"
+        style="@style/batsmen_txtView"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:text="4's"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:layout_height="match_parent"
+        android:id="@+id/tv_batsmen6s_item"
+        style="@style/batsmen_txtView"
+        android:layout_weight="0.15"
+        android:gravity="center"
+        android:text="6's"
+        android:textColor="@color/textColor" />
+
+
+</LinearLayout>

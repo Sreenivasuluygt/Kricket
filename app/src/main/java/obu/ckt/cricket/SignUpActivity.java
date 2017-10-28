@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import obu.ckt.cricket.database.DatabaseHandler;
@@ -13,6 +14,7 @@ public class SignUpActivity extends AppCompatActivity {
     private EditText etName, etEmail, etPassword;
     private Button btnSignUp;
     private DatabaseHandler db;
+    private ImageView ivBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +28,18 @@ public class SignUpActivity extends AppCompatActivity {
         etEmail = (EditText) findViewById(R.id.et_email_sing_up);
         etPassword = (EditText) findViewById(R.id.et_password_sing_up);
         btnSignUp = (Button) findViewById(R.id.btn_sing_up);
+        ivBack = (ImageView) findViewById(R.id.iv_back_sign_up);
         db = new DatabaseHandler(this);
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signUp();
+            }
+        });
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
     }
@@ -44,8 +53,8 @@ public class SignUpActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please enter password", Toast.LENGTH_SHORT).show();
         else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches())
             Toast.makeText(getApplicationContext(), "Please enter valid email", Toast.LENGTH_SHORT).show();
-        else if (etPassword.getText().toString().length() < 6)
-            Toast.makeText(getApplicationContext(), "Password should be more then 6 characters", Toast.LENGTH_SHORT).show();
+        else if (etPassword.getText().toString().length() < 4)
+            Toast.makeText(getApplicationContext(), "Password should be 4 or more characters", Toast.LENGTH_SHORT).show();
         else if (db.isEmailExists(etEmail.getText().toString())) {
             Toast.makeText(getApplicationContext(), "Email already exists", Toast.LENGTH_SHORT).show();
         } else {

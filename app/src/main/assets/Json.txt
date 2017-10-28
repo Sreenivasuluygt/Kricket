@@ -5,17 +5,17 @@
 	"currentInnings": "1",
 	"1stInnings": {
 		"batsmen": [
-			["batsmen1", 0, 0, "notout", 1],
-			["batsmen2", 0, 0, "notout", 0],
-			["batsmen3", 0, 0, "notout", 0],
-			["batsmen4", 0, 0, "notout", 0],
-			["batsmen5", 0, 0, "notout", 0],
-			["batsmen6", 0, 0, "notout", 0],
-			["batsmen7", 0, 0, "notout", 0],
-			["batsmen8", 0, 0, "notout", 0],
-			["batsmen9", 0, 0, "notout", 0],
-			["batsmen10", 0, 0, "notout", 0],
-			["batsmen11", 0, 0, "notout", 0]
+			["batsmen1", 0, 0, "notout", 1, 0, 0],
+			["batsmen2", 0, 0, "notout", 0, 0, 0],
+			["batsmen3", 0, 0, "notout", 0, 0, 0],
+			["batsmen4", 0, 0, "notout", 0, 0, 0],
+			["batsmen5", 0, 0, "notout", 0, 0, 0],
+			["batsmen6", 0, 0, "notout", 0, 0, 0],
+			["batsmen7", 0, 0, "notout", 0, 0, 0],
+			["batsmen8", 0, 0, "notout", 0, 0, 0],
+			["batsmen9", 0, 0, "notout", 0, 0, 0],
+			["batsmen10", 0, 0, "notout", 0, 0, 0],
+			["batsmen11", 0, 0, "notout", 0, 0, 0]
 		],
 		"bowler": [
 			["bowler1", 0, 0.0, 1],
@@ -37,17 +37,17 @@
 	},
 	"2ndInnings": {
 		"batsmen": [
-			["batsmen1", 0, 0, "notout", 1],
-			["batsmen2", 0, 0, "notout", 0],
-			["batsmen3", 0, 0, "notout", 0],
-			["batsmen4", 0, 0, "notout", 0],
-			["batsmen5", 0, 0, "notout", 0],
-			["batsmen6", 0, 0, "notout", 0],
-			["batsmen7", 0, 0, "notout", 0],
-			["batsmen8", 0, 0, "notout", 0],
-			["batsmen9", 0, 0, "notout", 0],
-			["batsmen10", 0, 0, "notout", 0],
-			["batsmen11", 0, 0, "notout", 0]
+			["batsmen1", 0, 0, "notout", 1, 0, 0],
+			["batsmen2", 0, 0, "notout", 0, 0, 0],
+			["batsmen3", 0, 0, "notout", 0, 0, 0],
+			["batsmen4", 0, 0, "notout", 0, 0, 0],
+			["batsmen5", 0, 0, "notout", 0, 0, 0],
+			["batsmen6", 0, 0, "notout", 0, 0, 0],
+			["batsmen7", 0, 0, "notout", 0, 0, 0],
+			["batsmen8", 0, 0, "notout", 0, 0, 0],
+			["batsmen9", 0, 0, "notout", 0, 0, 0],
+			["batsmen10", 0, 0, "notout", 0, 0, 0],
+			["batsmen11", 0, 0, "notout", 0, 0, 0]
 		],
 		"bowler": [
 			["bowler1", 0, 0.0, 1],

@@ -55,9 +55,12 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         rv_matches.setLayoutManager(new LinearLayoutManager(this));
         adapter = new HomeAdapter(this, new HomeAdapter.ItemClick() {
             @Override
-            public void onClick(String matchId) {
-                Intent i = new Intent(HomeActivity.this, MatchActivity.class);
-                i.putExtra(MatchActivity.EXTRA_MATCHE_ID, matchId);
+            public void onClick(String matchId, String status) {
+                Intent i;
+                if (status.equalsIgnoreCase("completed"))
+                    i = new Intent(HomeActivity.this, MatchHistoryActivity.class);
+                else i = new Intent(HomeActivity.this, MatchActivity.class);
+                i.putExtra(Utils.EXTRA_MATCHE_ID, matchId);
                 startActivity(i);
             }
         });
@@ -133,15 +136,15 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             public void onClick(View view) {
                 try {
                     if (Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(et2ndTeam) || Utils.checkEmpty(et1stBat)
-                            || Utils.checkEmpty(etToss) || Utils.checkEmpty(etOvers)) {
+                            || Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(etOvers)) {
                         Toast.makeText(getApplicationContext(), "enter all the fields", Toast.LENGTH_SHORT).show();
                     } else if (Utils.getText(et1stTeam).length() < 2 || Utils.getText(et2ndTeam).length() < 2) {
                         Toast.makeText(getApplicationContext(), "Team names should be more than 3 characters", Toast.LENGTH_SHORT).show();
                     } else if (!(Utils.getText(et1stBat).equalsIgnoreCase(Utils.getText(et1stTeam))
                             || Utils.getText(et1stBat).equalsIgnoreCase(Utils.getText(et2ndTeam)))) {
                         Toast.makeText(getApplicationContext(), "Enter whose batting first?", Toast.LENGTH_SHORT).show();
-                    } else if (!(Utils.getText(etToss).equalsIgnoreCase(Utils.getText(et1stTeam))
-                            || Utils.getText(etToss).equalsIgnoreCase(Utils.getText(et2ndTeam)))) {
+                    } else if (!(Utils.getText(et1stTeam).equalsIgnoreCase(Utils.getText(et1stTeam))
+                            || Utils.getText(et1stTeam).equalsIgnoreCase(Utils.getText(et2ndTeam)))) {
                         Toast.makeText(getApplicationContext(), "Enter who won toss?", Toast.LENGTH_SHORT).show();
                     } else {
                         JSONObject obj = new JSONObject();
@@ -154,8 +157,10 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                             @Override
                             public void success(int matchId) {
                                 dialog.dismiss();
-                                match.userId = String.valueOf(matchId);
-                                recycler();
+                                Intent i = new Intent(HomeActivity.this, MatchActivity.class);
+                                i.putExtra(Utils.EXTRA_MATCHE_ID, String.valueOf(matchId));
+                                startActivity(i);
+                                //recycler();
                             }
 
                             @Override
