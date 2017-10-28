@@ -44,7 +44,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.Holder> {
     public void onBindViewHolder(Holder holder, int position) {
         try {
             final Match match = list.get(position);
-            holder.tvName.setText((Utils.getTeamName(match.teamA) + " V/S " + Utils.getTeamName(match.teamB)));
+            holder.tvName.setText((Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB)));
             JSONObject jObj = new JSONObject(match.json);
             String text = "";
             switch (match.result.toLowerCase()) {

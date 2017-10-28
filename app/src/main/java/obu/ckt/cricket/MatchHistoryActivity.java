@@ -35,13 +35,20 @@ public class MatchHistoryActivity extends AppCompatActivity {
     }
 
     private void initControls() {
-        tvHeading = (TextView) findViewById(R.id.tv_matchhHeading_history);
-        tvResult = (TextView) findViewById(R.id.tv_result_history);
-        rvHistory = (RecyclerView) findViewById(R.id.recycler_history);
-        db = new DatabaseHandler(this);
-        match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
-        getHistLit();
-        loadRecycler();
+        try {
+            tvHeading = (TextView) findViewById(R.id.tv_matchhHeading_history);
+            tvResult = (TextView) findViewById(R.id.tv_result_history);
+            rvHistory = (RecyclerView) findViewById(R.id.recycler_history);
+            db = new DatabaseHandler(this);
+            match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
+            jObj = new JSONObject(match.json);
+            tvHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
+            tvResult.setText("Won : " + Utils.getTeamName(jObj.getString("won")));
+            getHistLit();
+            loadRecycler();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void loadRecycler() {
@@ -52,15 +59,14 @@ public class MatchHistoryActivity extends AppCompatActivity {
 
     private void getHistLit() {
         try {
-            jObj = new JSONObject(match.json);
-            histList.add(new MatchHistory(Utils.VIEWTYPE_HEADING, "1st Innings:" + Utils.getTeamName(match.teamA)));
+            histList.add(new MatchHistory(Utils.VIEWTYPE_HEADING, "1st Innings : " + Utils.getTeamName(match.teamA)));
             histList.add(new MatchHistory(Utils.VIEWTYPE_BATSMEN_HEADING, "[\"Batsmen\", \"Runs\", \"Balls\", \"\", \"\",\" 4's\", \"6's\"]"));
             histList.addAll(getBatsmenList(jObj.getJSONObject("1stInnings")));
             histList.add(new MatchHistory(Utils.VIEWTYPE_SCORES, jObj.getJSONObject("1stInnings").toString()));
             histList.add(new MatchHistory(Utils.VIEWTYPE_BOWLER_HEADING, "[\"Bowler\", \"Runs\",\"Overs\", \"\"]"));
             histList.addAll(getBowlerList(jObj.getJSONObject("1stInnings")));
 
-            histList.add(new MatchHistory(Utils.VIEWTYPE_HEADING, "2nd Innings:" + Utils.getTeamName(match.teamB)));
+            histList.add(new MatchHistory(Utils.VIEWTYPE_HEADING, "2nd Innings : " + Utils.getTeamName(match.teamB)));
             histList.add(new MatchHistory(Utils.VIEWTYPE_BATSMEN_HEADING, "[\"Batsmen\", \"Runs\", \"Balls\", \"\", \"\",\" 4's\", \"6's\"]"));
             histList.addAll(getBatsmenList(jObj.getJSONObject("2ndInnings")));
             histList.add(new MatchHistory(Utils.VIEWTYPE_SCORES, jObj.getJSONObject("2ndInnings").toString()));

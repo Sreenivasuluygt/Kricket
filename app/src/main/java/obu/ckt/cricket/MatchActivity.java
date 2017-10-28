@@ -608,10 +608,10 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     });
                     return;
                 } else if (inningsJson.getString("overs").contains(".0")) {
-                    changeStriker();
-                    changeBowlerStatus();
                     inningsJson.put("lastBowled", tvBowler.getText().toString());
                     inningsJson.put("thisOver", "");
+                    changeStriker();
+                    changeBowlerStatus();
                 }
                 if (match.result.toLowerCase().equalsIgnoreCase("FirstInnings") || match.result.toLowerCase().equalsIgnoreCase("Created")) {
                     matchJson.put("1stInnings", inningsJson);
@@ -649,9 +649,15 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         try {
             tvChangeBowler.setEnabled(true);
             JSONArray bowlersArr = inningsJson.getJSONArray("bowler");
+            boolean addedCurrentBowler = false;
             for (int i = 0; i < bowlersArr.length(); i++) {
                 JSONArray jArr = bowlersArr.getJSONArray(i);
-                jArr.put(3, 0);
+                if (jArr.get(0).equals(inningsJson.getString("lastBowled"))) {
+                    jArr.put(3, 0);
+                } else if(!addedCurrentBowler) {
+                    jArr.put(3, 1);
+                    addedCurrentBowler = true;
+                }
                 bowlersArr.put(i, jArr);
             }
             inningsJson.put("bowler", bowlersArr);
@@ -753,8 +759,11 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 addBallToBatmen(1, i);
                 addRunToScore(1 + i);
             }
-            addBallToBowler(0,1 + i);
-        } else {addRunToScore(1);addBallToBowler(0,1);}
+            addBallToBowler(0, 1 + i);
+        } else {
+            addRunToScore(1);
+            addBallToBowler(0, 1);
+        }
     }
 
     private void addWides(String data) {
@@ -960,14 +969,14 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             tvRunsAdded.setText(str);
         else if (tvRunsAdded.getText().toString().contains("W"))
             if (charCount == 1 && tvRunsAdded.getText().toString().split("\\+")[1].matches(regexStr)) {
-                return;
+                tvRunsAdded.setText(str);
             } else if (charCount < 2)
                 tvRunsAdded.append("+" + str);
             else
                 tvRunsAdded.setText(str);
         else if (tvRunsAdded.getText().toString().contains("N")) {
             if (charCount == 1 && tvRunsAdded.getText().toString().split("\\+")[1].matches(regexStr)) {
-                return;
+                tvRunsAdded.setText(str);
             } else if (charCount < 2)
                 tvRunsAdded.append("+" + str);
             else

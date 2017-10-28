@@ -65,9 +65,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> 
                 holder.tvBatBalls.setText(arr.getString(2));
                 holder.tvBat4s.setText(arr.getString(5));
                 holder.tvBat6s.setText(arr.getString(6));
-               if (arr.getString(3).equals("notout")){
-                   holder.tvBatsmenName.append("*");
-               }
+                if (arr.getString(3).equals("notout")) {
+                    holder.tvBatsmenName.append("*");
+                }
             } else if (match.viewType == Utils.VIEWTYPE_SCORES) {
                 JSONObject obj = new JSONObject(match.value);
                 holder.tvInnScore.setText(obj.getString("score"));
@@ -75,8 +75,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> 
             } else if (match.viewType == Utils.VIEWTYPE_BOWLER) {
                 JSONArray arr = new JSONArray(match.value);
                 holder.tvBowlerName.setText(arr.getString(0));
-                holder.tvBowOvers.setText(arr.getString(1));
-                holder.tvBowRuns.setText(arr.getString(2));
+                holder.tvBowRuns.setText(arr.getString(1));
+                holder.tvBowOvers.setText(arr.getString(2));
             }
         } catch (Exception e) {
             e.printStackTrace();
