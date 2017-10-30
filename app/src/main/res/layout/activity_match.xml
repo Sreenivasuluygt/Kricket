@@ -730,13 +730,13 @@
                 android:id="@+id/tv_noball_match"
                 style="@style/run_txtView"
                 android:layout_margin="@dimen/dp_5"
-                android:text="NB" />
+                android:text="Nb" />
 
             <TextView
                 android:id="@+id/tv_wide_match"
                 style="@style/run_txtView"
                 android:layout_margin="@dimen/dp_5"
-                android:text="WB" />
+                android:text="Wd" />
 
             <TextView
                 android:id="@+id/tv_byes_match"
@@ -748,7 +748,7 @@
                 android:id="@+id/tv_lbs_match"
                 style="@style/run_txtView"
                 android:layout_margin="5dp"
-                android:text="LB" />
+                android:text="Lb" />
 
             <TextView
                 android:id="@+id/tv_out_match"
