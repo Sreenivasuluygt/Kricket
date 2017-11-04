@@ -660,7 +660,7 @@
                 android:paddingRight="@dimen/dp_10"
                 android:text="Clear"
                 android:textColor="@color/white"
-                app:elevation="5dp" />
+                android:elevation="5dp" />
 
         </LinearLayout>
 

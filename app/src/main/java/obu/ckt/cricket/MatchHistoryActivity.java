@@ -43,7 +43,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
             match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
             jObj = new JSONObject(match.json);
             tvHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
-            tvResult.setText("Won : " + Utils.getTeamName(jObj.getString("won")));
+            tvResult.setText("Won : " + Utils.getTeamName(jObj.getString("won")) + " on " + jObj.getString("date"));
             getHistLit();
             loadRecycler();
         } catch (Exception e) {

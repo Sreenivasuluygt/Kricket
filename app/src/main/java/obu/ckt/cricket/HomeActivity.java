@@ -135,21 +135,14 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 try {
-                    if (Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(et2ndTeam) || Utils.checkEmpty(et1stBat)
-                            || Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(etOvers)) {
+                    if (Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(et2ndTeam) || Utils.checkEmpty(etOvers)) {
                         Toast.makeText(getApplicationContext(), "enter all the fields", Toast.LENGTH_SHORT).show();
                     } else if (Utils.getText(et1stTeam).length() < 2 || Utils.getText(et2ndTeam).length() < 2) {
                         Toast.makeText(getApplicationContext(), "Team names should be more than 3 characters", Toast.LENGTH_SHORT).show();
-                    } else if (!(Utils.getText(et1stBat).equalsIgnoreCase(Utils.getText(et1stTeam))
-                            || Utils.getText(et1stBat).equalsIgnoreCase(Utils.getText(et2ndTeam)))) {
-                        Toast.makeText(getApplicationContext(), "Enter whose batting first?", Toast.LENGTH_SHORT).show();
-                    } else if (!(Utils.getText(et1stTeam).equalsIgnoreCase(Utils.getText(et1stTeam))
-                            || Utils.getText(et1stTeam).equalsIgnoreCase(Utils.getText(et2ndTeam)))) {
-                        Toast.makeText(getApplicationContext(), "Enter who won toss?", Toast.LENGTH_SHORT).show();
                     } else {
                         JSONObject obj = new JSONObject();
                         obj.put("toss", Utils.getText(etToss));
-                        obj.put("1stBatting", Utils.getText(et1stBat));
+                        obj.put("1stBatting", Utils.getText(et1stTeam));
                         obj.put("overs", Utils.getText(etOvers));
                         match = new Match("", user.userId, Utils.getText(et1stTeam)
                                 , Utils.getText(et2ndTeam), obj.toString(), "created");

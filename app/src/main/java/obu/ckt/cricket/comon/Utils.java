@@ -1,11 +1,25 @@
 package obu.ckt.cricket.comon;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.provider.Settings;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+import obu.ckt.cricket.R;
 
 /**
  * Created by Administrator on 10/13/2017.
@@ -57,28 +71,69 @@ public class Utils {
     }
 
     public static void singleAlertDialogCallBack(Context context, String message, final Logout logout) {
-        final AlertDialog builder = new AlertDialog.Builder(context).create();
-        builder.setMessage(message);
-        builder.setButton("Yes", new DialogInterface.OnClickListener() {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_single_button);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        //lp.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(lp);
+        dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
+        dialog.show();
+        TextView tv = (TextView) dialog.findViewById(R.id.tv_single_dialog);
+        Button btn = (Button) dialog.findViewById(R.id.btn_singleDialog);
+        tv.setText(message);
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                builder.dismiss();
+            public void onClick(View v) {
+                dialog.dismiss();
                 logout.click();
             }
         });
-        builder.show();
     }
 
     public static void singleAlertDialog(Context context, String message) {
-        final AlertDialog builder = new AlertDialog.Builder(context).create();
-        builder.setMessage(message);
-        builder.setButton("Yes", new DialogInterface.OnClickListener() {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_single_button);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        //lp.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(lp);
+        dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
+        dialog.show();
+        TextView tv = (TextView) dialog.findViewById(R.id.tv_single_dialog);
+        Button btn = (Button) dialog.findViewById(R.id.btn_singleDialog);
+        tv.setText(message);
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                builder.dismiss();
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-        builder.show();
+    }
+
+    public static Dialog congratulations(Activity activity) {
+        final Dialog dialog = new Dialog(activity);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_congratulation);
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        ImageView iv = (ImageView) dialog.findViewById(R.id.iv_gif);
+        Glide.with(activity)
+                .load(R.drawable.ic_congratulation)
+                .into(iv);
+        //lp.gravity = Gravity.BOTTOM;
+        dialog.getWindow().setAttributes(lp);
+        dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
+        dialog.show();
+        return dialog;
     }
 
     public static String getTeamName(String team) {
@@ -95,6 +150,12 @@ public class Utils {
 
         return name.toUpperCase();
 
+    }
+
+    public static String getCurrentDate() {
+        SimpleDateFormat df = new SimpleDateFormat("MMM dd,yyyy");
+        String formattedDate = df.format(Calendar.getInstance().getTime());
+        return formattedDate;
     }
 
     public interface Logout {

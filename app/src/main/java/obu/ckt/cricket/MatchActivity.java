@@ -123,7 +123,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private void getData() {
         try {
             match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
-            tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
+            tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB)+" "+Utils.getCurrentDate());
             if (match.result.equalsIgnoreCase("created"))
                 matchJson = new JSONObject(getDataFromFile());
             else matchJson = new JSONObject(match.json);
@@ -254,7 +254,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_dot_match:
-                setDataToEdiText(".");
+                setDataToEdiText("0");
                 break;
             case R.id.tv_one_match:
                 setDataToEdiText("1");
@@ -275,13 +275,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 setDataToEdiText("6");
                 break;
             case R.id.tv_noball_match:
-                setDataToEdiText("N");
+                setDataToEdiText("nb");
                 break;
             case R.id.tv_wide_match:
-                setDataToEdiText("W");
+                setDataToEdiText("wd");
                 break;
             case R.id.tv_byes_match:
-                setDataToEdiText("B");
+                setDataToEdiText("b");
                 break;
             case R.id.tv_lbs_match:
                 setDataToEdiText("lb");
@@ -319,6 +319,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_ok_match:
                 validateEditText();
+                tvRunsAdded.setText("");
                 break;
         }
     }
@@ -431,16 +432,16 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
         else if (etData.equalsIgnoreCase("b"))
             Toast.makeText(getApplicationContext(), "Enter bye runs", Toast.LENGTH_LONG).show();
-        else if (etData.equalsIgnoreCase("w+b"))
+        else if (etData.equalsIgnoreCase("wd+b"))
             Toast.makeText(getApplicationContext(), "Enter bye runs", Toast.LENGTH_LONG).show();
-        else if (etData.equalsIgnoreCase("w+lb"))
+        else if (etData.equalsIgnoreCase("wd+lb"))
             Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
-        else if (etData.equalsIgnoreCase("n+lb"))
+        else if (etData.equalsIgnoreCase("nb+lb"))
             Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
-        else if (etData.equalsIgnoreCase("n+b"))
+        else if (etData.equalsIgnoreCase("nb+b"))
             Toast.makeText(getApplicationContext(), "Enter Bye runs", Toast.LENGTH_LONG).show();
-        else if (etData.equalsIgnoreCase("n+b+runout") || etData.equalsIgnoreCase("n+lb+runout") ||
-                etData.equalsIgnoreCase("w+b+runout") || etData.equalsIgnoreCase("w+lb+runout") ||
+        else if (etData.equalsIgnoreCase("nb+b+runout") || etData.equalsIgnoreCase("nb+lb+runout") ||
+                etData.equalsIgnoreCase("wd+b+runout") || etData.equalsIgnoreCase("wd+lb+runout") ||
                 etData.equalsIgnoreCase("b+runout") || etData.equalsIgnoreCase("lb+runout"))
             Toast.makeText(getApplicationContext(), "Enter Bye runs", Toast.LENGTH_LONG).show();
         else {
@@ -448,7 +449,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 addOut(etData);
             } else if (etData.contains("runout")) {
                 addRunOut(etData);
-            } else if (etData.contains(".")) {
+            } else if (etData.equals("0")) {
                 addDotBall();
             } else if (etData.equals("1")) {
                 addRun(1);
@@ -462,9 +463,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 addRun(5);
             } else if (etData.equals("6")) {
                 addRun(6);
-            } else if (etData.toLowerCase().contains("w")) {
+            } else if (etData.toLowerCase().contains("wd")) {
                 addWides(etData);
-            } else if (etData.toLowerCase().contains("n")) {
+            } else if (etData.toLowerCase().contains("nb")) {
                 addNoBall(etData);
             } else if (etData.toLowerCase().contains("lb")) {
                 addLegByes(etData);
@@ -481,8 +482,8 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void addThisOversRuns(String etData) {
         try {
-            String str = inningsJson.getString("thisOver") + "/" + etData.replace("+", "").replace("W", "wd").replace("runout", "w")
-                    .replace("out", "w").replace("B", "").replace("N", "nb");
+            String str = inningsJson.getString("thisOver") + "/" + etData.replace("+b", "").replace("+", "").replace("runout", "w")
+                    .replace("out", "w");
             inningsJson.put("thisOver", str);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -508,7 +509,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void checkMatchStatus(String etData) {
         try {
-            if (!etData.contains("w") || !etData.contains("n")) {
+            if (!etData.contains("wd") || !etData.contains("nb")) {
                 //Checking overs completed or not
                 if (inningsJson.getDouble("overs") >= matchJson.getDouble("overs")) {
                     if (match.result.toLowerCase().equalsIgnoreCase("SecondInnings")) {
@@ -525,9 +526,11 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                             matchJson.put("won", matchJson.getString("1stBatting"));
                         }
                         matchJson.put("2ndInnings", inningsJson);
+                        matchJson.put("date",Utils.getCurrentDate());
                         match.json = matchJson.toString();
                         match.result = "Completed";
-                        Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                        //Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                        Utils.congratulations(MatchActivity.this);
                     } else {
                         matchJson.put("1stInnings", inningsJson);
                         match.json = matchJson.toString();
@@ -554,10 +557,11 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     else
                         matchJson.put("won", match.teamA);
 
-
+                    matchJson.put("date",Utils.getCurrentDate());
                     match.json = matchJson.toString();
                     match.result = "Completed";
-                    Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                    //Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                    Utils.congratulations(MatchActivity.this);
                     db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
                         @Override
                         public void success(int matchId) {
@@ -586,9 +590,11 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                             matchJson.put("won", matchJson.getString("1stBatting"));
                         }
                         matchJson.put("2ndInnings", inningsJson);
+                        matchJson.put("date",Utils.getCurrentDate());
                         match.json = matchJson.toString();
                         match.result = "Completed";
-                        Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                      //  Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                        Utils.congratulations(MatchActivity.this);
                     } else {
                         matchJson.put("1stInnings", inningsJson);
                         match.json = matchJson.toString();
@@ -654,7 +660,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 JSONArray jArr = bowlersArr.getJSONArray(i);
                 if (jArr.get(0).equals(inningsJson.getString("lastBowled"))) {
                     jArr.put(3, 0);
-                } else if(!addedCurrentBowler) {
+                } else if (!addedCurrentBowler) {
                     jArr.put(3, 1);
                     addedCurrentBowler = true;
                 }
@@ -667,24 +673,38 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void addOut(final String etData) {
-        dialog.selectPlayer(inningsJson, "Select Who'se out?", new SelectPlayerDialog.OnSelected() {
-            @Override
-            public void selected(int position) {
-                //inningsJson = innings;
-                try {
-                    addBallToBowler(1, 0);
-                    addBallToOvers();
-                    addBallToBatmen(1, 0);
-                    inningsJson.getJSONArray("batsmen").getJSONArray(position).put(3, "out");
-                    String[] str = inningsJson.getString("score").split("/");
-                    inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) + 1));
-                    checkMatchStatus(etData);
-                    getData();
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        try {
+            addBallToBowler(1, 0);
+            addBallToOvers();
+            addBallToBatmen(1, 0);
+            strikerOut();
+            String[] str = inningsJson.getString("score").split("/");
+            inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) + 1));
+            checkMatchStatus(etData);
+            getData();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    private void strikerOut() {
+        try {
+            JSONArray batsmenArr = inningsJson.getJSONArray("batsmen");
+            for (int i = 0; i < batsmenArr.length(); i++) {
+                JSONArray batArr = batsmenArr.getJSONArray(i);
+                if (batArr.get(3).equals("notout")) {
+                    if (batArr.get(4).equals(Utils.JSON_STRIKING)) {
+                        batArr.put(3, "out");
+                        batsmenArr.put(i, batArr);
+                        break;
+                    }
                 }
             }
-        });
+            inningsJson.put("batsmen", batsmenArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -697,9 +717,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 try {
                     if (etData.contains("+")) {
                         String[] str = etData.split("\\+");
-                        if (etData.toLowerCase().contains("n"))
+                        if (etData.toLowerCase().contains("nb"))
                             addNoBall(etData.toLowerCase().replace("+runout", ""));
-                        else if (etData.contains("w"))
+                        else if (etData.contains("wd"))
                             addNoBall(etData.toLowerCase().replace("+runout", ""));
                         else addRun(Integer.parseInt(str[str.length - 1]));
                     } else {
@@ -749,7 +769,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         if (etData.contains("+")) {
             String[] str = etData.split("\\+");
             int i = Integer.parseInt(str[str.length - 1]);
-            if (etData.contains("b") || (etData.contains("lb"))) {
+            if (etData.contains("+b") || (etData.contains("lb"))) {
                 if ((i % 2) != 0) {
                     changeStriker();
                 }
@@ -934,47 +954,45 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             tvRunsAdded.setText(str);
         else if (tvRunsAdded.getText().toString().contains("runout") && !str.matches(regexStr))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && str.toLowerCase().contains("w"))
+        else if (tvRunsAdded.getText().toString().contains("nb") && str.toLowerCase().contains("wd"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && str.equalsIgnoreCase("n"))
+        else if (tvRunsAdded.getText().toString().contains("nb") && str.equalsIgnoreCase("nb"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && str.toLowerCase().equalsIgnoreCase("out"))
+        else if (tvRunsAdded.getText().toString().contains("nb") && str.toLowerCase().equalsIgnoreCase("out"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && str.toLowerCase().equals("."))
+         else if (tvRunsAdded.getText().toString().contains("nb") && tvRunsAdded.getText().toString().toLowerCase().contains("+b") && str.toLowerCase().contains("lb"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && tvRunsAdded.getText().toString().toLowerCase().contains("b") && str.toLowerCase().contains("lb"))
+        else if (tvRunsAdded.getText().toString().contains("nb") && tvRunsAdded.getText().toString().toLowerCase().contains("+lb") && str.toLowerCase().contains("b"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N") && tvRunsAdded.getText().toString().toLowerCase().contains("lb") && str.toLowerCase().contains("b"))
+        else if (tvRunsAdded.getText().toString().contains("wd") && str.equalsIgnoreCase("nb"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W") && str.equalsIgnoreCase("n"))
+        else if (tvRunsAdded.getText().toString().contains("wd") && str.toLowerCase().contains("wd"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W") && str.toLowerCase().contains("w"))
+        else if (tvRunsAdded.getText().toString().contains("wd") && str.toLowerCase().contains("lb"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W") && str.toLowerCase().contains("lb"))
+        else if (tvRunsAdded.getText().toString().contains("wd") && str.toLowerCase().equalsIgnoreCase("out"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W") && str.toLowerCase().equalsIgnoreCase("out"))
+        else if (tvRunsAdded.getText().toString().contains("wd") && str.toLowerCase().equals("0"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W") && str.toLowerCase().equals("."))
-            tvRunsAdded.setText(str);
-        else if ((tvRunsAdded.getText().toString().toLowerCase().contains("n+b+runout")) || (tvRunsAdded.getText().toString().toLowerCase().contains("n+lb+runout"))
-                || (tvRunsAdded.getText().toString().toLowerCase().contains("w+b+runout")) || (tvRunsAdded.getText().toString().toLowerCase().contains("w+lb+runout"))
+        else if ((tvRunsAdded.getText().toString().toLowerCase().contains("nb+b+runout")) || (tvRunsAdded.getText().toString().toLowerCase().contains("nb+lb+runout"))
+                || (tvRunsAdded.getText().toString().toLowerCase().contains("wd+b+runout")) || (tvRunsAdded.getText().toString().toLowerCase().contains("wd+lb+runout"))
                 || (tvRunsAdded.getText().toString().toLowerCase().contains("b+runout")) || (tvRunsAdded.getText().toString().toLowerCase().contains("lb+runout")))
             if (charCount <= 2 && str.toLowerCase().matches(regexStr))
                 tvRunsAdded.append("+" + str);
             else tvRunsAdded.setText(str);
 
-        else if (tvRunsAdded.getText().toString().contains("B") && !str.toLowerCase().matches(regexStr) && !str.equalsIgnoreCase("runout"))
+        else if (tvRunsAdded.getText().toString().equals("b") && !str.toLowerCase().matches(regexStr) && !str.equalsIgnoreCase("runout")&& !str.equalsIgnoreCase("runout"))
             tvRunsAdded.setText(str);
         else if (tvRunsAdded.getText().toString().contains("lb") && !str.toLowerCase().matches(regexStr) && !str.equalsIgnoreCase("runout"))
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("W"))
+        else if (tvRunsAdded.getText().toString().contains("wd"))
             if (charCount == 1 && tvRunsAdded.getText().toString().split("\\+")[1].matches(regexStr)) {
                 tvRunsAdded.setText(str);
             } else if (charCount < 2)
                 tvRunsAdded.append("+" + str);
             else
                 tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("N")) {
+        else if (tvRunsAdded.getText().toString().contains("nb")) {
             if (charCount == 1 && tvRunsAdded.getText().toString().split("\\+")[1].matches(regexStr)) {
                 tvRunsAdded.setText(str);
             } else if (charCount < 2)
@@ -983,7 +1001,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 tvRunsAdded.setText(str);
         } else if (charCount > 0)
             tvRunsAdded.setText(str);
-        else if (tvRunsAdded.getText().toString().contains("."))
+        else if (tvRunsAdded.getText().toString().contains("0"))
             tvRunsAdded.setText(str);
         else if (!tvRunsAdded.getText().toString().isEmpty())
             tvRunsAdded.append("+" + str);

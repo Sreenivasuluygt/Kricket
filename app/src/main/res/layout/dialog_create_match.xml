@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/white"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/dp_20"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_20">
 
     <TextView
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
         style="@style/login_edt"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/create_match"
-        android:hint="Enter team name"
+        android:hint="1st team to bat"
         android:inputType="text" />
 
     <EditText
@@ -29,17 +29,17 @@
         style="@style/login_edt"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/create_match"
-        android:hint="Enter 2nd team name"
+        android:hint="2nd tem to bat"
         android:inputType="text" />
 
     <EditText
-        android:visibility="gone"
         android:id="@+id/et_toss_create"
         style="@style/login_edt"
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/create_match"
         android:hint="toss who won?"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/et_firstBat_create"
@@ -47,7 +47,8 @@
         android:layout_marginTop="@dimen/dp_20"
         android:background="@drawable/create_match"
         android:hint="whose batting 1st?"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone" />
 
     <EditText
         android:id="@+id/et_overs_create"

@@ -114,8 +114,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(getApplicationContext(), "Please enter password", Toast.LENGTH_SHORT).show();
         else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches())
             Toast.makeText(getApplicationContext(), "Please enter valid email", Toast.LENGTH_SHORT).show();
-        else if (etPassword.getText().toString().length() < 6)
-            Toast.makeText(getApplicationContext(), "Password should be more then 6 characters", Toast.LENGTH_SHORT).show();
+        else if (etPassword.getText().toString().length() < 4)
+            Toast.makeText(getApplicationContext(), "Password should be more then 4 characters", Toast.LENGTH_SHORT).show();
         else
             db.validateLogin(etEmail.getText().toString(),
                     etPassword.getText().toString(), new Login() {
