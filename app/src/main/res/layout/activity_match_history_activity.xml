@@ -14,26 +14,26 @@
         android:minHeight="60dp"
         android:orientation="vertical">
 
-        <TextView
+        <obu.ckt.cricket.comon.RegularTextView
             android:id="@+id/tv_matchhHeading_history"
             style="@style/batsmen_txtView"
             android:layout_width="match_parent"
-            android:height="@dimen/dp_20"
+            android:height="@dimen/_20sdp"
             android:gravity="center|bottom"
             android:text="Match"
             android:textColor="@color/white"
-            android:textSize="16sp"
+            android:textSize="@dimen/_14sdp"
             android:textStyle="bold" />
 
-        <TextView
+        <obu.ckt.cricket.comon.RegularTextView
             android:id="@+id/tv_result_history"
             style="@style/batsmen_txtView"
             android:layout_width="match_parent"
-            android:height="@dimen/dp_20"
+            android:height="@dimen/_20sdp"
             android:gravity="center"
             android:text="Match"
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="@dimen/_12sdp"
             android:textStyle="bold" />
     </LinearLayout>
 

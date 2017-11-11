@@ -5,20 +5,20 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
+    <obu.ckt.cricket.comon.RegularTextView
         android:id="@+id/tv_message_dialog_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_margin="@dimen/_15sdp"
         android:gravity="center"
         android:text="Who'se Out?"
         android:textColor="@color/textColor"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/_13sdp"
         android:textStyle="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:minHeight="100dp"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_margin="@dimen/_5sdp"
         android:id="@+id/rv_dialog_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

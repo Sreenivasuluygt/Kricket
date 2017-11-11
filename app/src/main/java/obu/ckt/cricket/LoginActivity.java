@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -25,6 +24,7 @@ import obu.ckt.cricket.comon.SharePref;
 import obu.ckt.cricket.comon.Utils;
 import obu.ckt.cricket.data.DataLayer;
 import obu.ckt.cricket.database.DatabaseHandler;
+import obu.ckt.cricket.fragments.QuickFragment;
 import obu.ckt.cricket.interfaces.Login;
 import obu.ckt.cricket.model.User;
 
@@ -33,7 +33,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     DatabaseHandler db;
     private EditText etEmail, etPassword;
-    private TextView tvSignUp, tvSkip;
+    private obu.ckt.cricket.comon.RegularTextView tvSignUp, tvSkip;
     private Button btnLogin;
     private SharePref prefs;
     private DataLayer dLayer;
@@ -48,8 +48,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initControls() {
         etEmail = (EditText) findViewById(R.id.et_email_login);
         etPassword = (EditText) findViewById(R.id.et_password_login);
-        tvSignUp = (TextView) findViewById(R.id.tv_signup_login);
-        tvSkip = (TextView) findViewById(R.id.tv_skip_login);
+        tvSignUp = (obu.ckt.cricket.comon.RegularTextView) findViewById(R.id.tv_signup_login);
+        tvSkip = (obu.ckt.cricket.comon.RegularTextView) findViewById(R.id.tv_skip_login);
         btnLogin = (Button) findViewById(R.id.btn_log_login);
 
 

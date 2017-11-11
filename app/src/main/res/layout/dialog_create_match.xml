@@ -5,21 +5,21 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/dp_20">
+    android:paddingBottom="@dimen/_20sdp">
 
-    <TextView
+    <obu.ckt.cricket.comon.RegularTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/appBackground"
         android:gravity="center"
-        android:minHeight="@dimen/dp_40"
+        android:minHeight="@dimen/_40sdp"
         android:text="@string/create_match_1"
         android:textColor="@color/white" />
 
     <EditText
         android:id="@+id/et_firstTeam_create"
         style="@style/login_edt"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_15sdp"
         android:background="@drawable/create_match"
         android:hint="1st team to bat"
         android:inputType="text" />
@@ -27,7 +27,7 @@
     <EditText
         android:id="@+id/et_secondTeam_create"
         style="@style/login_edt"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_15sdp"
         android:background="@drawable/create_match"
         android:hint="2nd tem to bat"
         android:inputType="text" />
@@ -35,7 +35,7 @@
     <EditText
         android:id="@+id/et_toss_create"
         style="@style/login_edt"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_20sdp"
         android:background="@drawable/create_match"
         android:hint="toss who won?"
         android:inputType="text"
@@ -44,7 +44,7 @@
     <EditText
         android:id="@+id/et_firstBat_create"
         style="@style/login_edt"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_20sdp"
         android:background="@drawable/create_match"
         android:hint="whose batting 1st?"
         android:inputType="text"
@@ -53,7 +53,7 @@
     <EditText
         android:id="@+id/et_overs_create"
         style="@style/login_edt"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_15sdp"
         android:background="@drawable/create_match"
         android:hint="overs for match?"
         android:inputType="number" />
@@ -63,13 +63,13 @@
         style="@style/login_edt"
         android:layout_width="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginTop="@dimen/_5sdp"
         android:background="@color/btnColor"
-        android:elevation="@dimen/dp_5"
+        android:elevation="@dimen/_5sdp"
         android:text="Create"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_16"
+        android:textSize="@dimen/_16sdp"
         android:textStyle="bold"
-        app:elevation="@dimen/dp_5" />
+        app:elevation="@dimen/_5sdp" />
 
 </LinearLayout>

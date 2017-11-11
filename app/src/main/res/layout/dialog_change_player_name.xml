@@ -5,27 +5,27 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
+    <obu.ckt.cricket.comon.RegularTextView
         android:id="@+id/tv_heading_dialog_change_player_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_10"
+        android:layout_margin="@dimen/_10sdp"
         android:gravity="center"
-        android:minHeight="@dimen/dp_30"
+        android:minHeight="@dimen/_30sdp"
         android:textColor="@color/textColor"
-        android:textSize="@dimen/sp_15" />
+        android:textSize="@dimen/_15sdp" />
 
     <EditText
         android:id="@+id/et_name_dialog_change_player_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_30"
-        android:minHeight="@dimen/dp_35"
-        android:textSize="@dimen/sp_14" />
+        android:layout_margin="@dimen/_30sdp"
+        android:minHeight="@dimen/_35sdp"
+        android:textSize="@dimen/_14sdp" />
     <Button
-        android:layout_margin="@dimen/dp_20"
+        android:layout_margin="@dimen/_25sdp"
         android:id="@+id/btn_ok_dialog_change_player_name"
-        android:textSize="@dimen/sp_15"
+        android:textSize="@dimen/_15sdp"
         android:background="@color/btnColor"
         android:textColor="@color/white"
         android:text="OK"

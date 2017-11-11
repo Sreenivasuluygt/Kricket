@@ -30,9 +30,10 @@
 			["bowler10", 0, 0.0, 0],
 			["bowler11", 0, 0.0, 0]
 		],
+		"lastWicket":[],
 		"score": "0/0",
 		"lastBowled": "",
-		"thisOver": "",
+		"thisOver": [],
 		"overs": "0"
 	},
 	"2ndInnings": {
@@ -62,9 +63,10 @@
 			["bowler10", 0, 0.0, 0],
 			["bowler11", 0, 0.0, 0]
 		],
+		"lastWicket":[],
 		"score": "0/0",
 		"lastBowled": "",
-		"thisOver": "",
+		"thisOver": [],
 		"overs": "0"
 	}
 }

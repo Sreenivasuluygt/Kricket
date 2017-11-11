@@ -1,20 +1,15 @@
 package obu.ckt.cricket.comon;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bumptech.glide.Glide;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -117,7 +112,7 @@ public class Utils {
         });
     }
 
-    public static Dialog congratulations(Activity activity) {
+    public static Dialog congratulations(Activity activity, String won) {
         final Dialog dialog = new Dialog(activity);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_congratulation);
@@ -125,10 +120,8 @@ public class Utils {
         lp.copyFrom(dialog.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        ImageView iv = (ImageView) dialog.findViewById(R.id.iv_gif);
-        Glide.with(activity)
-                .load(R.drawable.ic_congratulation)
-                .into(iv);
+        TextView tvWon = (TextView) dialog.findViewById(R.id.tv_dialog_cong);
+        tvWon.append(" : " + getTeamName(won));
         //lp.gravity = Gravity.BOTTOM;
         dialog.getWindow().setAttributes(lp);
         dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
