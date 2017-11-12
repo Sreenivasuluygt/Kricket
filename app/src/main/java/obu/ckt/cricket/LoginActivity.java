@@ -3,6 +3,7 @@ package obu.ckt.cricket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -109,13 +110,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void dbLogin() {
         if (etEmail.getText().toString().isEmpty())
-            Toast.makeText(getApplicationContext(), "Please enter email", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnLogin, "Please enter email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().isEmpty())
-            Toast.makeText(getApplicationContext(), "Please enter password", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnLogin, "Please enter password", Snackbar.LENGTH_SHORT).show();
         else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches())
-            Toast.makeText(getApplicationContext(), "Please enter valid email", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnLogin, "Please enter valid email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().length() < 4)
-            Toast.makeText(getApplicationContext(), "Password should be more then 4 characters", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnLogin, "Password should be more then 4 characters", Snackbar.LENGTH_SHORT).show();
         else
             db.validateLogin(etEmail.getText().toString(),
                     etPassword.getText().toString(), new Login() {

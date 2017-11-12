@@ -1,12 +1,12 @@
 package obu.ckt.cricket;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import obu.ckt.cricket.database.DatabaseHandler;
 
@@ -46,17 +46,17 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUp() {
         if (etName.getText().toString().isEmpty())
-            Toast.makeText(getApplicationContext(), "Please enter name", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Please enter name", Snackbar.LENGTH_SHORT).show();
         else if (etEmail.getText().toString().isEmpty())
-            Toast.makeText(getApplicationContext(), "Please enter email", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Please enter email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().isEmpty())
-            Toast.makeText(getApplicationContext(), "Please enter password", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Please enter password", Snackbar.LENGTH_SHORT).show();
         else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(etEmail.getText().toString()).matches())
-            Toast.makeText(getApplicationContext(), "Please enter valid email", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Please enter valid email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().length() < 4)
-            Toast.makeText(getApplicationContext(), "Password should be 4 or more characters", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Password should be 4 or more characters", Snackbar.LENGTH_SHORT).show();
         else if (db.isEmailExists(etEmail.getText().toString())) {
-            Toast.makeText(getApplicationContext(), "Email already exists", Toast.LENGTH_SHORT).show();
+            Snackbar.make(btnSignUp, "Email already exists", Snackbar.LENGTH_SHORT).show();
         } else {
             db.insertUser(etName.getText().toString(), etEmail.getText().toString(),
                     etPassword.getText().toString());

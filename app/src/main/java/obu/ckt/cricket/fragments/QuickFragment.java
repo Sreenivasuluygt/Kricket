@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,16 +16,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import obu.ckt.cricket.LoginActivity;
 import obu.ckt.cricket.MatchActivity;
 import obu.ckt.cricket.MatchHistoryActivity;
 import obu.ckt.cricket.R;
@@ -50,6 +48,7 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
     private HomeAdapter adapter;
     private View view;
     private Activity activity;
+    private static String BUNDLE = "Bundle";
 
     @Override
     public void onAttach(Context context) {
@@ -64,6 +63,14 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
         view = inflater.inflate(R.layout.fragment_quick, container, false);
         initControls();
         return view;
+    }
+
+    public static QuickFragment newInstance(String current) {
+        QuickFragment fragment = new QuickFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(BUNDLE, current);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     private void initControls() {
@@ -95,7 +102,19 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
             @Override
             public void success(List<Match> matches) {
                 matchList.clear();
-                matchList = matches;
+                if (getArguments().getString(BUNDLE).equalsIgnoreCase("progress"))
+                    for (Match match : matches) {
+                        if (!match.result.equalsIgnoreCase("Completed")) {
+                            matchList.add(match);
+                        }
+                    }
+                else {
+                    for (Match match : matches) {
+                        if (match.result.equalsIgnoreCase("Completed")) {
+                            matchList.add(match);
+                        }
+                    }
+                }
                 adapter.setMatchList(matchList);
                 adapter.notifyDataSetChanged();
             }
@@ -128,7 +147,7 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
         dialog.getWindow().setAttributes(lp);
         dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
         final EditText et1stTeam, et2ndTeam, etToss, et1stBat, etOvers;
-        Button btnCreate;
+        final Button btnCreate;
         et1stTeam = (EditText) dialog.findViewById(R.id.et_firstTeam_create);
         et2ndTeam = (EditText) dialog.findViewById(R.id.et_secondTeam_create);
         etToss = (EditText) dialog.findViewById(R.id.et_toss_create);
@@ -140,9 +159,9 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
             public void onClick(View view) {
                 try {
                     if (Utils.checkEmpty(et1stTeam) || Utils.checkEmpty(et2ndTeam) || Utils.checkEmpty(etOvers)) {
-                        Toast.makeText(activity, "enter all the fields", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(btnCreate, "enter all the fields", Snackbar.LENGTH_SHORT).show();
                     } else if (Utils.getText(et1stTeam).length() < 2 || Utils.getText(et2ndTeam).length() < 2) {
-                        Toast.makeText(activity, "Team names should be more than 3 characters", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(btnCreate, "Team names should be more than 3 characters", Snackbar.LENGTH_SHORT).show();
                     } else {
                         JSONObject obj = new JSONObject();
                         obj.put("toss", Utils.getText(etToss));

@@ -1,7 +1,10 @@
 package obu.ckt.cricket;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenuItemView;
+import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -14,27 +17,59 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import obu.ckt.cricket.comon.RegularTextView;
 import obu.ckt.cricket.comon.SharePref;
 import obu.ckt.cricket.comon.Utils;
+import obu.ckt.cricket.data.DataLayer;
 import obu.ckt.cricket.fragments.DashboardFragment;
+import obu.ckt.cricket.fragments.QuickFragment;
+
 
 public class HomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    DataLayer dataLayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        dataLayer=DataLayer.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        RegularTextView name= (RegularTextView) ((LinearLayout)navigationView.getHeaderView(0)).getChildAt(0);
+        RegularTextView mail= (RegularTextView) ((LinearLayout)navigationView.getHeaderView(0)).getChildAt(1);
+        name.setText(dataLayer.getUser(SharePref.getInstance(this)).name);
+        mail.setText(dataLayer.getUser(SharePref.getInstance(this)).email);
         addFragment(new DashboardFragment());
+
+        final Menu navMenu = navigationView.getMenu();
+        navigationView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ArrayList<View> menuItems = new ArrayList<>(); // save Views in this array
+                navigationView.getViewTreeObserver().removeOnGlobalLayoutListener(this); // remove the global layout listener
+                for (int i = 0; i < navMenu.size(); i++) {// loops over menu items  to get the text view from each menu item
+                    final MenuItem item = navMenu.getItem(i);
+                    navigationView.findViewsWithText(menuItems, item.getTitle(), View.FIND_VIEWS_WITH_TEXT);
+                }
+                for (final View menuItem : menuItems) {// loops over the saved views and sets the font
+                    ((TextView) menuItem).setTypeface(Typeface.createFromAsset(getAssets(),"fonts/Aleo-Regular.otf"));
+                }
+            }
+        });
     }
 
     public void addFragment(Fragment fragment) {
@@ -96,10 +131,13 @@ public class HomeActivity extends AppCompatActivity
         int id = item.getItemId();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        if (id == R.id.nav_camera) {
+        if (id == R.id.nav_home) {
             // Handle the camera action
-            Snackbar.make(drawer, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            addFragment(new DashboardFragment());
+        }
+        else if (id == R.id.nav_history) {
+            // Handle the camera action
+            addFragment(QuickFragment.newInstance("Completed"));
         }
         drawer.closeDrawer(GravityCompat.START);
         return true;

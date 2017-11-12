@@ -1,6 +1,7 @@
 package obu.ckt.cricket;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -337,9 +338,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void undoOperation() {
         try {
-            if (matchJson.getString("thisOver").length() > 0 && !matchJson.getString("thisOver").equals("/")) {
-                String[] arr = matchJson.getString("thisOver").substring(1).split("/");
-                String deleteStr = arr[arr.length];
+            if (inningsJson.getJSONArray("thisOver").length() > 0) {
+                JSONArray arr = inningsJson.getJSONArray("thisOver");
+                String deleteStr = arr.getString(arr.length() - 1);
                 if (deleteStr.equalsIgnoreCase("w")) {
                     undoOut();
                 } else if (deleteStr.equals("0")) {
@@ -357,16 +358,48 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 } else if (deleteStr.equals("6")) {
                     undoRun(6);
                 } else if (deleteStr.toLowerCase().contains("wd")) {
-                    undoWides(deleteStr);
+                    if (deleteStr.replace("wd", "").contains("w"))
+                        undoRunOut(deleteStr);
+                    else
+                        undoWides(deleteStr);
                 } else if (deleteStr.toLowerCase().contains("nb")) {
-                    undoNoBall(deleteStr);
+                    if (deleteStr.replace("nb", "").contains("w"))
+                        undoRunOut(deleteStr);
+                    else
+                        undoNoBall(deleteStr);
+                } else if (deleteStr.toLowerCase().contains("w")) {
+                    undoRunOut(deleteStr);
                 } else if (deleteStr.toLowerCase().contains("lb")) {
                     undoLegByes(deleteStr);
                 } else if (deleteStr.toLowerCase().contains("b")) {
                     undoByes(deleteStr);
-                } else if (deleteStr.toLowerCase().contains("b")) {
-                    undoRunOut(deleteStr);
                 }
+                arr.remove(arr.length() - 1);
+                if (match.result.toLowerCase().equalsIgnoreCase("FirstInnings") || match.result.toLowerCase().equalsIgnoreCase("Created")) {
+                    matchJson.put("1stInnings", inningsJson);
+                    match.json = matchJson.toString();
+                    match.result = "FirstInnings";
+                } else if (match.result.toLowerCase().equalsIgnoreCase("SecondInnings")) {
+                    matchJson.put("2ndInnings", inningsJson);
+                    match.json = matchJson.toString();
+                    match.result = "SecondInnings";
+                } else if (match.result.toLowerCase().equalsIgnoreCase("Completed")) {
+                    matchJson.put("2ndInnings", inningsJson);
+                    match.json = matchJson.toString();
+                    match.result = "Completed";
+                }
+                db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                    @Override
+                    public void success(int matchId) {
+
+                    }
+
+                    @Override
+                    public void failure() {
+
+                    }
+                });
+                getData();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -374,39 +407,390 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void undoRunOut(String deleteStr) {
+        try {
+            StringBuilder result = new StringBuilder();
+            String etData = deleteStr;
+            undoBatsmen();
+            if (deleteStr.length() > 0) {
+                result.append(deleteStr.charAt(0));
+                for (int i = 1; i < deleteStr.length(); i++) {
+                    result.append("+");
+                    result.append(deleteStr.charAt(i));
+                }
+                etData = result.toString();
+            }
+            if (etData.contains("+")) {
+                String[] str = etData.split("\\+");
+                if (etData.toLowerCase().contains("n+b"))
+                    removeRunOutNoBall(deleteStr.replace("w", ""));
+                else if (etData.contains("w+d"))
+                    removeRunOutNoBall(deleteStr.replace("wd", "Wd").replace("w", "").replace("Wd", "wd"));
+                else {
+                    removeRunoutRun(Integer.parseInt(str[str.length - 1]));
+                }
+                if (str[str.length - 1].matches(regexStr))
+                    removeRunoutBatsmen(1, Integer.parseInt(str[str.length - 1]));
+                else
+                    removeRunoutBatsmen(1, 0);
+            } else {
+                removeBallToBowler(1, 0);
+                removeBallToOvers();
+                removeRunoutBatsmen(1, 0);
+            }
+            //inningsJson.getJSONArray("batsmen").getJSONArray(position).put(3, "out");
+            String[] str = inningsJson.getString("score").split("/");
+            inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) - 1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeRunoutBatsmen(int ball, int runs) {
+        try {
+            JSONArray batsmenArr = inningsJson.getJSONArray("batsmen");
+            boolean isLastWicketStrike = false;
+            int position = 0;
+            JSONArray lastwicArr = inningsJson.getJSONArray("lastWicket");
+            for (int j = 0; j < batsmenArr.length(); j++) {
+                if (lastwicArr.getString(lastwicArr.length() - 1).equals(batsmenArr.getJSONArray(j).getString(0))) {
+                    position = j;
+                    isLastWicketStrike = batsmenArr.getJSONArray(j).length() == 8;
+                    lastwicArr.remove(lastwicArr.length()-1);
+                    break;
+                }
+            }
+            if (isLastWicketStrike)
+                for (int j = 0; j < batsmenArr.length(); j++) {
+                    if (j != position)
+                        batsmenArr.getJSONArray(j).put(4, 0);
+                    else {
+                        batsmenArr.getJSONArray(j).put(4, 1);
+                        batsmenArr.getJSONArray(j).put(3, "notout");
+                    }
+                }
+            else batsmenArr.getJSONArray(position).put(3, "notout");
+
+            for (int i = 0; i < batsmenArr.length(); i++) {
+                JSONArray batArr = batsmenArr.getJSONArray(i);
+                if (batArr.get(3).equals("notout")) {
+                    if (batArr.get(4).equals(Utils.JSON_STRIKING)) {
+                        if (runs == 6) {
+                            batArr.put(6, batArr.getInt(6) - 1);
+                        } else if (runs == 4)
+                            batArr.put(5, batArr.getInt(5) - 1);
+                        if (batArr.getInt(1) > 0)
+                            batArr.put(1, batArr.getInt(1) - runs);
+                        if (batArr.getInt(2) > 0)
+                            batArr.put(2, batArr.getInt(2) - ball);
+                        break;
+                    }
+                    batsmenArr.put(i, batArr);
+                }
+            }
+            inningsJson.put("batsmen", batsmenArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void undoBatsmen() {
+        try {
+            JSONArray arr = inningsJson.getJSONArray("batsmen");
+            JSONArray lastArr = inningsJson.getJSONArray("lastWicket");
+            for (int i = 0; i < arr.length(); i++) {
+                if (arr.getJSONArray(i).getString(1).equalsIgnoreCase(lastArr.getString(lastArr.length() - 1))) {
+                    arr.getJSONArray(i).put(3, "notout");
+                    if (arr.getJSONArray(i).getString(7).equalsIgnoreCase("strike")) {
+                        for (int j = 0; j < arr.length(); j++) {
+                            arr.getJSONArray(j).put(4, 0);
+                        }
+                        arr.getJSONArray(i).put(4, 1);
+                    }
+                    break;
+                }
+            }
+            inningsJson.put("batsmen", arr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void removeRunoutRun(int run) {
+        removeBallToBowler(1, run);
+        removeBallToOvers();
+        removeRunToScore(run);
+    }
+
+    private void removeRun(int run) {
+        removeBallToBowler(1, run);
+        removeBallToBatmen(1, run);
+        removeBallToOvers();
+        removeRunToScore(run);
+    }
+
+    private void removeRunToScore(int runs) {
+        try {
+            String[] str = inningsJson.getString("score").split("/");
+            int score = Integer.parseInt(str[0]);
+            inningsJson.put("score", score - runs + "/" + str[1]);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void removeNoBall(String deleteStr) {
+        StringBuilder result = new StringBuilder();
+        deleteStr = deleteStr.replace("nb", "");
+        String etData = deleteStr;
+        if (deleteStr.length() > 0) {
+            result.append(deleteStr.charAt(0));
+            for (int i = 1; i < deleteStr.length(); i++) {
+                result.append("+");
+                result.append(deleteStr.charAt(i));
+            }
+            etData = result.toString();
+        }
+        etData = etData.length() == 0 ? "0" : etData;
+        etData = etData.contains("l") ? etData.replace("+b", "").replace("l", "lb") : etData;
+
+        if (etData.contains("+")) {
+            String[] str = etData.split("\\+");
+            int i = Integer.parseInt(str[str.length - 1]);
+            if (etData.contains("+b") || (etData.contains("lb"))) {
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeRunToScore(1 + i);
+                removeBallToBatmen(1, 0);
+            } else {
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeBallToBatmen(1, i);
+                removeRunToScore(1 + i);
+            }
+            removeBallToBowler(0, 1 + i);
+        } else if (etData.isEmpty()) {
+            removeRunToScore(1);
+            removeBallToBowler(0, 1);
+            removeBallToBatmen(1, 0);
+        } else {
+            removeRunToScore(1 + Integer.parseInt(etData));
+            removeBallToBowler(0, 1 + Integer.parseInt(etData));
+            removeBallToBatmen(1, Integer.parseInt(etData));
+        }
+    }
+
+    private void removeRunOutNoBall(String deleteStr) {
+        StringBuilder result = new StringBuilder();
+        deleteStr = deleteStr.replace("nb", "");
+        String etData = deleteStr;
+        if (deleteStr.length() > 0) {
+            result.append(deleteStr.charAt(0));
+            for (int i = 1; i < deleteStr.length(); i++) {
+                result.append("+");
+                result.append(deleteStr.charAt(i));
+            }
+            etData = result.toString();
+        }
+        etData = etData.length() == 0 ? "0" : etData;
+        etData = etData.contains("l") ? etData.replace("+b", "").replace("l", "lb") : etData;
+
+        if (etData.contains("+")) {
+            String[] str = etData.split("\\+");
+            int i = Integer.parseInt(str[str.length - 1]);
+            if (etData.contains("+b") || (etData.contains("lb"))) {
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeRunToScore(1 + i);
+            } else {
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeRunToScore(1 + i);
+            }
+            removeBallToBowler(0, 1 + i);
+        } else if (etData.isEmpty()) {
+            removeRunToScore(1);
+            removeBallToBowler(0, 1);
+        } else {
+            removeRunToScore(1 + Integer.parseInt(etData));
+            removeBallToBowler(0, 1 + Integer.parseInt(etData));
+        }
     }
 
     private void undoByes(String deleteStr) {
+        StringBuilder result = new StringBuilder();
+        String data = deleteStr;
+        if (deleteStr.length() > 0) {
+            result.append(deleteStr.charAt(0));
+            for (int i = 1; i < deleteStr.length(); i++) {
+                result.append("+");
+                result.append(deleteStr.charAt(i));
+            }
+            data = result.toString();
+
+
+            String[] str = data.split("\\+");
+            int i = Integer.parseInt(str[str.length - 1]);
+            if ((i % 2) != 0) {
+                changeStriker();
+            }
+            removeRunToScore(i);
+            removeBallToOvers();
+            removeBallToBatmen(1, 0);
+            removeBallToBowler(1, i);
+        }
     }
 
     private void undoLegByes(String deleteStr) {
+        StringBuilder result = new StringBuilder();
+        String data = deleteStr;
+        if (deleteStr.length() > 0) {
+            result.append(deleteStr.charAt(0));
+            for (int i = 1; i < deleteStr.length(); i++) {
+                result.append("+");
+                result.append(deleteStr.charAt(i));
+            }
+            data = result.toString();
+        }
+
+
+        String[] str = data.split("\\+");
+        int i = Integer.parseInt(str[str.length - 1]);
+        if ((i % 2) != 0) {
+            changeStriker();
+        }
+        removeRunToScore(i);
+        removeBallToOvers();
+        removeBallToBatmen(1, 0);
+        removeBallToBowler(1, i);
     }
 
     private void undoNoBall(String deleteStr) {
+        removeNoBall(deleteStr);
     }
 
     private void undoWides(String deleteStr) {
+        StringBuilder result = new StringBuilder();
+        String data = deleteStr;
+        if (deleteStr.length() > 0 && !data.equalsIgnoreCase("wd")) {
+            result.append(deleteStr.charAt(0));
+            for (int i = 1; i < deleteStr.length(); i++) {
+                result.append("+");
+                result.append(deleteStr.charAt(i));
+            }
+            data = result.toString();
+        }
+
+
+        if (data.contains("+")) {
+            String[] str = data.split("\\+");
+            if (data.toLowerCase().contains("b")) {
+                int i = Integer.parseInt(str[str.length - 1]);
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeBallToBowler(0, 1 + Integer.parseInt(str[str.length - 1]));
+                removeRunToScore(1 + Integer.parseInt(str[str.length - 1]));
+            } else {
+                int i = Integer.parseInt(str[str.length - 1]);
+                if ((i % 2) != 0) {
+                    changeStriker();
+                }
+                removeBallToBowler(0, 1 + Integer.parseInt(str[str.length - 1]));
+                removeRunToScore(1 + Integer.parseInt(str[str.length - 1]));
+            }
+
+        } else {
+            removeRunToScore(1);
+        }
     }
 
     private void undoDotBall() {
-        //removeBallToBowler(1, 0);
-        //removeBallToBatmen(1, 0);
-        // addBallToOvers();
+        removeBallToBowler(1, 0);
+        removeBallToBatmen(1, 0);
+        removeBallToOvers();
     }
 
     private void undoOut() {
-       /* addBallToBowler(1, 0);
-        addBallToOvers();
-        addBallToBatmen(1, 0);
-        strikerOut();
-        String[] str = inningsJson.getString("score").split("/");
-        inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) + 1));
+        try {
+            removeBallToBowler(1, 0);
+            removeBallToOvers();
+            strikerNotOut();
+            removeBallToBatmen(1, 0);
+            String[] str = inningsJson.getString("score").split("/");
+            inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) - 1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        removeBallToBowler(1,0);
-        removeBallToOvers();*/
+    private void removeBallToBatmen(int ball, int runs) {
+        try {
+            JSONArray batsmenArr = inningsJson.getJSONArray("batsmen");
+            boolean isEven = false, isStrikerChecked = false;
+            for (int i = 0; i < batsmenArr.length(); i++) {
+                JSONArray batArr = batsmenArr.getJSONArray(i);
+                if (runs == 0) isEven = true;
+                else if ((runs % 2) == 0) isEven = true;
+                if (!isEven && !isStrikerChecked) {
+                    changeStriker();
+                    isStrikerChecked = true;
+                }
+                if (batArr.get(3).equals("notout")) {
+                    if (batArr.get(4).equals(Utils.JSON_STRIKING)) {
+                        if (runs == 6) {
+                            batArr.put(6, batArr.getInt(6) - 1);
+                        } else if (runs == 4)
+                            batArr.put(5, batArr.getInt(5) - 1);
+                        if (batArr.getInt(1) > 0)
+                            batArr.put(1, batArr.getInt(1) - runs);
+                        if (batArr.getInt(2) > 0)
+                            batArr.put(2, batArr.getInt(2) - ball);
+                    }
+                    batsmenArr.put(i, batArr);
+                }
+            }
+            inningsJson.put("batsmen", batsmenArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void strikerNotOut() {
+        try {
+            JSONArray batsmenArr = inningsJson.getJSONArray("batsmen");
+            JSONArray lastWicket = inningsJson.getJSONArray("lastWicket");
+            for (int i = 0; i < batsmenArr.length(); i++) {
+                JSONArray batArr = batsmenArr.getJSONArray(i);
+                if (batArr.get(3).equals("out") && batArr.getString(0).equalsIgnoreCase(lastWicket.getString(lastWicket.length() - 1))) {
+                    batArr.put(4, 1);
+                    batArr.put(3, "notout");
+                    lastWicket.remove(lastWicket.length() - 1);
+                    break;
+                } else {
+                    batArr.put(4, 0);
+                }
+                batsmenArr.put(i, batArr);
+
+            }
+            inningsJson.put("batsmen", batsmenArr);
+            inningsJson.put("lastWicket", lastWicket);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void undoRun(int i) {
+        removeRun(i);
     }
 
     private void removeBallToBowler(int balls, int runs) {
@@ -544,31 +928,31 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         if (etData.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Select runs to add", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Select runs to add", Snackbar.LENGTH_SHORT).show();
         } else if (!batmen1.contains("*") && !batmen2.contains("*")) {
-            Toast.makeText(getApplicationContext(), "Select striker", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Select striker", Snackbar.LENGTH_SHORT).show();
         } else if (!checkBowlerToBowl()) {
-            Toast.makeText(getApplicationContext(), "Select bowler to bowl", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Select bowler to bowl", Snackbar.LENGTH_SHORT).show();
         }
         /*else if (charCount > 0) {
-            Toast.makeText(getApplicationContext(), "Enter correct data", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter correct data", Snackbar.LENGTH_SHORT).show();
         }*/
         else if (etData.equalsIgnoreCase("lb"))
-            Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter Leg Bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("b"))
-            Toast.makeText(getApplicationContext(), "Enter bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("wd+b"))
-            Toast.makeText(getApplicationContext(), "Enter bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("wd+lb"))
-            Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter Leg Bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("nb+lb"))
-            Toast.makeText(getApplicationContext(), "Enter Leg Bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter Leg Bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("nb+b"))
-            Toast.makeText(getApplicationContext(), "Enter Bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter Bye runs", Snackbar.LENGTH_SHORT).show();
         else if (etData.equalsIgnoreCase("nb+b+runout") || etData.equalsIgnoreCase("nb+lb+runout") ||
                 etData.equalsIgnoreCase("wd+b+runout") || etData.equalsIgnoreCase("wd+lb+runout") ||
                 etData.equalsIgnoreCase("b+runout") || etData.equalsIgnoreCase("lb+runout"))
-            Toast.makeText(getApplicationContext(), "Enter Bye runs", Toast.LENGTH_LONG).show();
+            Snackbar.make(btnOk, "Enter Bye runs", Snackbar.LENGTH_SHORT).show();
         else {
             if (etData.equalsIgnoreCase("out")) {
                 addOut(etData);
@@ -607,7 +991,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void addThisOversRuns(String etData) {
         try {
-            inningsJson.getJSONArray("thisOver").put(etData.replace("+b", "").replace("+", "").replace("runout", "w")
+            inningsJson.getJSONArray("thisOver").put(etData.replace("+", "").replace("runout", "w")
                     .replace("out", "w"));
             // inningsJson.put("thisOver", str);
         } catch (JSONException e) {
@@ -850,13 +1234,16 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                             addNoBall(etData.toLowerCase().replace("+runout", ""));
                         else if (etData.contains("wd"))
                             addNoBall(etData.toLowerCase().replace("+runout", ""));
-                        else addRun(Integer.parseInt(str[str.length - 1]));
+                        else addRunOutRuns(Integer.parseInt(str[str.length - 1]));
                     } else {
                         addBallToBowler(1, 0);
                         addBallToOvers();
+                        addBallToBatmen(1, 0);
                     }
-                    addBallToBatmen(1, 0);
+                    if (inningsJson.getJSONArray("batsmen").getJSONArray(position).getInt(4) == Utils.JSON_STRIKING)
+                        inningsJson.getJSONArray("batsmen").getJSONArray(position).put(7, "strike");
                     inningsJson.getJSONArray("batsmen").getJSONArray(position).put(3, "out");
+                    inningsJson.getJSONArray("lastWicket").put(inningsJson.getJSONArray("batsmen").getJSONArray(position).getString(0));
                     String[] str = inningsJson.getString("score").split("/");
                     inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) + 1));
                     addThisOversRuns(etData);
@@ -873,38 +1260,40 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private void addLegByes(String etData) {
         String[] str = etData.split("\\+");
         int i = Integer.parseInt(str[str.length - 1]);
-        if ((i % 2) != 0) {
-            changeStriker();
-        }
         addRunToScore(i);
         addBallToOvers();
         addBallToBatmen(1, 0);
         addBallToBowler(1, i);
+        if ((i % 2) != 0) {
+            changeStriker();
+        }
     }
 
     private void addByes(String etData) {
         String[] str = etData.split("\\+");
         int i = Integer.parseInt(str[str.length - 1]);
-        if ((i % 2) != 0) {
-            changeStriker();
-        }
         addRunToScore(i);
         addBallToOvers();
         addBallToBatmen(1, 0);
         addBallToBowler(1, i);
+        if ((i % 2) != 0) {
+            changeStriker();
+        }
     }
 
 
     private void addNoBall(String etData) {
         if (etData.contains("+")) {
             String[] str = etData.split("\\+");
-            int i = Integer.parseInt(str[str.length - 1]);
+            int i = 0;
+            if (String.valueOf(Integer.parseInt(str[str.length - 1])).matches(regexStr))
+                i = Integer.parseInt(str[str.length - 1]);
             if (etData.contains("+b") || (etData.contains("lb"))) {
+                addRunToScore(1 + i);
+                addBallToBatmen(1, i);
                 if ((i % 2) != 0) {
                     changeStriker();
                 }
-                addRunToScore(1 + i);
-                addBallToBatmen(1, 0);
             } else {
                 addBallToBatmen(1, i);
                 addRunToScore(1 + i);
@@ -913,6 +1302,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         } else {
             addRunToScore(1);
             addBallToBowler(0, 1);
+            addBallToBatmen(1, 0);
         }
     }
 
@@ -969,6 +1359,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private void addRun(int run) {
         addBallToBowler(1, run);
         addBallToBatmen(1, run);
+        addBallToOvers();
+        addRunToScore(run);
+    }
+
+    private void addRunOutRuns(int run) {
+        addBallToBowler(1, run);
+        addRunoutBallToBatmen(1, run);
         addBallToOvers();
         addRunToScore(run);
     }
@@ -1030,6 +1427,31 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     batsmenArr.put(i, batArr);
                     if (isNonStrikerChecked && isStrikerChecked)
                         break;
+                }
+            }
+            inningsJson.put("batsmen", batsmenArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void addRunoutBallToBatmen(int ball, int runs) {
+        try {
+            JSONArray batsmenArr = inningsJson.getJSONArray("batsmen");
+            for (int i = 0; i < batsmenArr.length(); i++) {
+                JSONArray batArr = batsmenArr.getJSONArray(i);
+                if (batArr.get(3).equals("notout")) {
+                    if (batArr.get(4).equals(Utils.JSON_STRIKING)) {
+                        if (runs == 6) {
+                            batArr.put(6, batArr.getInt(6) + 1);
+                        } else if (runs == 4)
+                            batArr.put(5, batArr.getInt(5) + 1);
+                        batArr.put(1, batArr.getInt(1) + runs);
+                        batArr.put(2, batArr.getInt(2) + ball);
+                    }
+                    batsmenArr.put(i, batArr);
                 }
             }
             inningsJson.put("batsmen", batsmenArr);

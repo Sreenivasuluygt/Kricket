@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
+    android:clickable="true"
     tools:context="obu.ckt.cricket.fragments.DashboardFragment">
 
     <android.support.v7.widget.CardView

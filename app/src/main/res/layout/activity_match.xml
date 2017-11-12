@@ -136,12 +136,21 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:weightSum="1">
 
-            <obu.ckt.cricket.comon.RegularTextView
-                android:id="@+id/tv_player1_match"
-                style="@style/batsmen_txtView"
-                android:layout_weight="0.4"
-                android:text="Player1"
-                android:textColor="@color/textColor" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4">
+
+                <obu.ckt.cricket.comon.RegularTextView
+                    android:id="@+id/tv_player1_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_width="wrap_content"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableRight="@mipmap/ic_pen"
+                    android:text="Player1"
+                    android:textColor="@color/textColor" />
+            </LinearLayout>
+
 
             <obu.ckt.cricket.comon.RegularTextView
                 android:id="@+id/tv_player1Runs_match"
@@ -186,12 +195,20 @@
 
             android:weightSum="1">
 
-            <obu.ckt.cricket.comon.RegularTextView
-                android:id="@+id/tv_player2_match"
-                style="@style/batsmen_txtView"
-                android:layout_weight="0.4"
-                android:text="Player2"
-                android:textColor="@color/textColor" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4">
+
+                <obu.ckt.cricket.comon.RegularTextView
+                    android:id="@+id/tv_player2_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_width="wrap_content"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableRight="@mipmap/ic_pen"
+                    android:text="Player2"
+                    android:textColor="@color/textColor" />
+            </LinearLayout>
 
             <obu.ckt.cricket.comon.RegularTextView
                 android:id="@+id/tv_player2Runs_match"
@@ -348,12 +365,20 @@
             android:layout_marginTop="@dimen/_5sdp"
             android:weightSum="1">
 
-            <obu.ckt.cricket.comon.RegularTextView
-                android:id="@+id/tv_bowlerName_match"
-                style="@style/batsmen_txtView"
-                android:layout_weight="0.4"
-                android:text="Player1"
-                android:textColor="@color/textColor" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4">
+
+                <obu.ckt.cricket.comon.RegularTextView
+                    android:id="@+id/tv_bowlerName_match"
+                    style="@style/batsmen_txtView"
+                    android:layout_width="wrap_content"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:drawableRight="@mipmap/ic_pen"
+                    android:text="Player1"
+                    android:textColor="@color/textColor" />
+            </LinearLayout>
 
             <obu.ckt.cricket.comon.RegularTextView
                 android:id="@+id/tv_bowlerOvers_match"
@@ -631,10 +656,10 @@
                 <obu.ckt.cricket.comon.RegularTextView
                     android:id="@+id/et_runsAdded_match"
                     android:layout_width="match_parent"
-                    android:layout_marginTop="@dimen/_10sdp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_10sdp"
                     android:enabled="false"
                     android:textColor="@color/textColor" />
 
