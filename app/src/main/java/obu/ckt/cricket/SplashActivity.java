@@ -25,6 +25,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (prefs.getValue(Utils.SHARED_USERID).length() > 0)
                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                 else startActivity(new Intent(SplashActivity.this, LoginActivity.class));
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                 finish();
             }
         }, 2000);

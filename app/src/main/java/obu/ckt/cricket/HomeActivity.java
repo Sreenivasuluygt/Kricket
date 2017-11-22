@@ -3,10 +3,7 @@ package obu.ckt.cricket;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.design.internal.NavigationMenuItemView;
-import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -40,7 +37,7 @@ public class HomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        dataLayer=DataLayer.getInstance(this);
+        dataLayer = DataLayer.getInstance(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -49,8 +46,8 @@ public class HomeActivity extends AppCompatActivity
         toggle.syncState();
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        RegularTextView name= (RegularTextView) ((LinearLayout)navigationView.getHeaderView(0)).getChildAt(0);
-        RegularTextView mail= (RegularTextView) ((LinearLayout)navigationView.getHeaderView(0)).getChildAt(1);
+        RegularTextView name = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(0);
+        RegularTextView mail = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(1);
         name.setText(dataLayer.getUser(SharePref.getInstance(this)).name);
         mail.setText(dataLayer.getUser(SharePref.getInstance(this)).email);
         addFragment(new DashboardFragment());
@@ -66,7 +63,7 @@ public class HomeActivity extends AppCompatActivity
                     navigationView.findViewsWithText(menuItems, item.getTitle(), View.FIND_VIEWS_WITH_TEXT);
                 }
                 for (final View menuItem : menuItems) {// loops over the saved views and sets the font
-                    ((TextView) menuItem).setTypeface(Typeface.createFromAsset(getAssets(),"fonts/Aleo-Regular.otf"));
+                    ((TextView) menuItem).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Aleo-Regular.otf"));
                 }
             }
         });
@@ -75,6 +72,7 @@ public class HomeActivity extends AppCompatActivity
     public void addFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
         fragmentTransaction.add(R.id.container_home, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
@@ -88,6 +86,7 @@ public class HomeActivity extends AppCompatActivity
         } else {
             Fragment f = getSupportFragmentManager().findFragmentById(R.id.container_home);
             if (f instanceof DashboardFragment) {
+                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
                 finish();
             } else
                 super.onBackPressed();
@@ -115,6 +114,7 @@ public class HomeActivity extends AppCompatActivity
                 public void click() {
                     SharePref.getInstance(HomeActivity.this).clearAll();
                     startActivity(new Intent(HomeActivity.this, LoginActivity.class));
+                    overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                     finish();
                 }
             });
@@ -134,8 +134,7 @@ public class HomeActivity extends AppCompatActivity
         if (id == R.id.nav_home) {
             // Handle the camera action
             addFragment(new DashboardFragment());
-        }
-        else if (id == R.id.nav_history) {
+        } else if (id == R.id.nav_history) {
             // Handle the camera action
             addFragment(QuickFragment.newInstance("Completed"));
         }

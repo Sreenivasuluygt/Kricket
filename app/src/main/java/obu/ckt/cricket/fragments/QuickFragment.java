@@ -85,6 +85,7 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                 else i = new Intent(activity, MatchActivity.class);
                 i.putExtra(Utils.EXTRA_MATCHE_ID, matchId);
                 startActivity(i);
+               activity. overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             }
         });
         rv_matches.setAdapter(adapter);

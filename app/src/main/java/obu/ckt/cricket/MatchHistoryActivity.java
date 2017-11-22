@@ -105,4 +105,10 @@ public class MatchHistoryActivity extends AppCompatActivity {
         }
         return list;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+    }
 }

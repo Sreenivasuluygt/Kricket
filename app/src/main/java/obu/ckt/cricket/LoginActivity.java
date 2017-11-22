@@ -87,6 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.tv_signup_login:
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+                overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                 break;
             case R.id.btn_log_login:
                 dbLogin();
@@ -135,6 +136,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void openHomeActivity() {
         startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+        overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
         finish();
     }
 

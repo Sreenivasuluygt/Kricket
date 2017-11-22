@@ -1581,6 +1581,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right);
+    }
+
     /* private void addBallToLayout(String str) {
         LinearLayout ballLayout = (LinearLayout) findViewById(R.id.ll_addBall_match);
         if (ballLayout.getChildCount() > 0)
