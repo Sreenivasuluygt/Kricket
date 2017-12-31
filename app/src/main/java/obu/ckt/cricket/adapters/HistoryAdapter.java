@@ -77,6 +77,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> 
                 holder.tvBowlerName.setText(arr.getString(0));
                 holder.tvBowRuns.setText(arr.getString(1));
                 holder.tvBowOvers.setText(arr.getString(2));
+                holder.tvWickets.setText(arr.getString(4));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +91,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> 
 
     class Holder extends RecyclerView.ViewHolder {
         TextView tvBatsmenName, tvBatRuns, tvBatBalls, tvBat4s, tvBat6s;
-        TextView tvBowlerName, tvBowRuns, tvBowOvers;
+        TextView tvBowlerName, tvBowRuns, tvBowOvers,tvWickets;
         TextView tvInnScore, tvInnOvers;
         TextView tvInnName;
 
@@ -111,6 +112,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> 
                 tvBowlerName = (TextView) itemView.findViewById(R.id.tv_bowlerName_item);
                 tvBowRuns = (TextView) itemView.findViewById(R.id.tv_bowlerRuns_item);
                 tvBowOvers = (TextView) itemView.findViewById(R.id.tv_bowlerOvers_item);
+                tvWickets = (TextView) itemView.findViewById(R.id.tv_wickets_item);
             }
         }
     }

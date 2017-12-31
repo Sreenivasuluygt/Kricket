@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,18 +8,54 @@
     android:orientation="vertical"
     tools:context="obu.ckt.cricket.fragments.QuickFragment">
 
-
     <obu.ckt.cricket.comon.RegularTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:text="No matches in history"
+        android:textColor="@color/textColor" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:src="@drawable/ic_add_white"
+        android:visibility="gone" />
+
+
+    <obu.ckt.cricket.comon.RegularButton
         android:id="@+id/tv_createMatch_home"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_5sdp"
-        android:background="@drawable/create_match"
-        android:gravity="center|start"
+        android:background="@color/btnColor"
+        android:gravity="center"
         android:minHeight="@dimen/_35sdp"
         android:paddingLeft="@dimen/_10sdp"
         android:text="@string/create_match"
-        android:textSize="@dimen/_12sdp" />
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        android:visibility="visible" />
+
+    <obu.ckt.cricket.comon.RegularButton
+        android:id="@+id/tv_History_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_createMatch_home"
+
+        android:layout_margin="@dimen/_5sdp"
+        android:background="@color/btnColor"
+        android:gravity="center"
+        android:minHeight="@dimen/_35sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:text="@string/history"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_12sdp"
+        android:visibility="visible" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -51,9 +87,12 @@
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="@dimen/_5sdp"
         android:id="@+id/rv_matches_home"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_History_home"
+        android:background="@color/white" />
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -18,9 +18,11 @@ public class MatchGridAdapter extends RecyclerView.Adapter<MatchGridAdapter.View
     private String[] mData = new String[0];
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
+    private Context mContext;
 
     // data is passed into the constructor
     public MatchGridAdapter(Context context, String[] data) {
+        mContext = context;
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
     }
@@ -35,8 +37,12 @@ public class MatchGridAdapter extends RecyclerView.Adapter<MatchGridAdapter.View
     // binds the data to the textview in each cell
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        String animal = mData[position];
-        holder.myTextView.setText(animal);
+        String run = mData[position];
+        if (run.contains("w") && !run.contains("wd"))
+            holder.myTextView.setBackground(mContext.getResources().getDrawable(R.drawable.ball_background_red));
+        if (run.equals("4") || run.contains("6"))
+            holder.myTextView.setBackground(mContext.getResources().getDrawable(R.drawable.ball_background_sky_blue));
+        holder.myTextView.setText(run);
     }
 
     // total number of cells
@@ -68,7 +74,7 @@ public class MatchGridAdapter extends RecyclerView.Adapter<MatchGridAdapter.View
     }
 
     // allows clicks events to be caught
-   public void setClickListener(ItemClickListener itemClickListener) {
+    public void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 

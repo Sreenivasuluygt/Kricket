@@ -38,6 +38,14 @@
             android:gravity="center"
             android:text="Runs"
             android:textColor="@color/textColor" />
+        <obu.ckt.cricket.comon.RegularTextView
+            android:textStyle="bold"
+            android:id="@+id/tv_wickets_item"
+            style="@style/batsmen_txtView"
+            android:layout_weight="0.2"
+            android:gravity="center"
+            android:text="Wickets"
+            android:textColor="@color/textColor" />
 
     </LinearLayout>
     <View

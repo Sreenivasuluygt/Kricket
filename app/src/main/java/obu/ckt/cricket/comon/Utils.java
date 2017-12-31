@@ -121,7 +121,10 @@ public class Utils {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         TextView tvWon = (TextView) dialog.findViewById(R.id.tv_dialog_cong);
-        tvWon.append(" : " + getTeamName(won));
+        if (won.equalsIgnoreCase("tie"))
+            tvWon.setText("Match drawn");
+        else
+            tvWon.append(" : " + getTeamName(won));
         //lp.gravity = Gravity.BOTTOM;
         dialog.getWindow().setAttributes(lp);
         dialog.getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);

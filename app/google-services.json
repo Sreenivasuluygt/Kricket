@@ -1,33 +1,35 @@
 {
   "project_info": {
-    "project_number": "546938953164",
-    "project_id": "cricket-c1cc1"
+    "project_number": "264037988723",
+    "firebase_url": "https://cricketcalci.firebaseio.com",
+    "project_id": "cricketcalci",
+    "storage_bucket": "cricketcalci.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:546938953164:android:5f90932fc1941ec1",
+        "mobilesdk_app_id": "1:264037988723:android:003807c9003db583",
         "android_client_info": {
-          "package_name": "obu.ckt.cricket"
+          "package_name": "com.app.cricketapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "546938953164-tqh4l6jckat40d68q85t6tesrgkefiej.apps.googleusercontent.com",
+          "client_id": "264037988723-cgfrpmm1otgafraan8ltqg5ua5lh9d8s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "obu.ckt.cricket",
-            "certificate_hash": "b21e4e88479fe516d6c7b168fc5ff50df3b738d5"
+            "package_name": "com.app.cricketapp",
+            "certificate_hash": "a4536425715f768c430b72349f87b96bcf0edad9"
           }
         },
         {
-          "client_id": "546938953164-ngtavsoqa11ma7rpuj4vf6q0h0og7l1o.apps.googleusercontent.com",
+          "client_id": "264037988723-9aq0v5r6uekvuag0pf47jso4a07eotc1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAyyg4hS2GtmfGfqJAQJQMbwzU78xBo8BM"
+          "current_key": "AIzaSyCQxOVO-ZOU7vprZJDGfsTuF06huQzzXRI"
         }
       ],
       "services": {
@@ -35,11 +37,16 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "264037988723-9aq0v5r6uekvuag0pf47jso4a07eotc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }

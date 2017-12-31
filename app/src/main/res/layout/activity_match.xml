@@ -14,18 +14,43 @@
         android:layout_marginBottom="@dimen/_120sdp"
         android:orientation="vertical">
 
-        <obu.ckt.cricket.comon.RegularTextView
-            android:id="@+id/tv_matchhHeading_match"
-            style="@style/batsmen_txtView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:height="@dimen/_20sdp"
             android:background="@color/appBackground"
-            android:gravity="center"
-            android:minHeight="@dimen/_40sdp"
-            android:text="Match"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_13sdp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/_40sdp">
+
+            <obu.ckt.cricket.comon.RegularTextView
+                android:id="@+id/tv_matchhHeading_match"
+                style="@style/batsmen_txtView"
+                android:layout_width="wrap_content"
+                android:height="@dimen/_20sdp"
+                android:layout_centerInParent="true"
+
+                android:gravity="center"
+                android:minHeight="@dimen/_40sdp"
+                android:text="Match"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_13sdp"
+                android:textStyle="bold" />
+
+            <obu.ckt.cricket.comon.RegularTextView
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="@dimen/_10sdp"
+                android:id="@+id/tv_date_match"
+                style="@style/batsmen_txtView"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
+                android:height="@dimen/_20sdp"
+                android:background="@color/appBackground"
+                android:gravity="center"
+                android:minHeight="@dimen/_40sdp"
+                android:text="Match"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_11sdp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -337,16 +362,23 @@
             <obu.ckt.cricket.comon.RegularTextView
                 style="@style/batsmen_txtView"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="Overs" />
 
             <obu.ckt.cricket.comon.RegularTextView
                 style="@style/batsmen_txtView"
                 android:layout_height="match_parent"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="Runs" />
+
+            <obu.ckt.cricket.comon.RegularTextView
+                style="@style/batsmen_txtView"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="Wickets" />
 
 
         </LinearLayout>
@@ -383,7 +415,7 @@
             <obu.ckt.cricket.comon.RegularTextView
                 android:id="@+id/tv_bowlerOvers_match"
                 style="@style/batsmen_txtView"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="0"
                 android:textColor="@color/textColor" />
@@ -391,7 +423,15 @@
             <obu.ckt.cricket.comon.RegularTextView
                 android:id="@+id/tv_bowlerRuns_match"
                 style="@style/batsmen_txtView"
-                android:layout_weight="0.25"
+                android:layout_weight="0.2"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/textColor" />
+
+            <obu.ckt.cricket.comon.RegularTextView
+                android:id="@+id/tv_bowlerWickets_match"
+                style="@style/batsmen_txtView"
+                android:layout_weight="0.2"
                 android:gravity="center"
                 android:text="0"
                 android:textColor="@color/textColor" />
@@ -659,15 +699,16 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_2sdp"
                     android:enabled="false"
                     android:textColor="@color/textColor" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_1sdp"
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/et_runsAdded_match"
                     android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:background="@color/appBackground" />
             </RelativeLayout>
 

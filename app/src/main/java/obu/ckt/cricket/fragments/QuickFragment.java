@@ -16,13 +16,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import obu.ckt.cricket.HomeActivity;
 import obu.ckt.cricket.MatchActivity;
 import obu.ckt.cricket.MatchHistoryActivity;
 import obu.ckt.cricket.R;
@@ -38,7 +38,7 @@ import obu.ckt.cricket.model.User;
 
 public class QuickFragment extends Fragment implements View.OnClickListener {
     private RecyclerView rv_matches;
-    private TextView tvCreate;
+    private Button tvCreate, tvHistory;
     private SharePref pref;
     private DataLayer layer;
     private User user;
@@ -74,6 +74,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initControls() {
+        tvCreate = view.findViewById(R.id.tv_createMatch_home);
+        tvHistory = view.findViewById(R.id.tv_History_home);
         rv_matches = (RecyclerView) view.findViewById(R.id.rv_matches_home);
         rv_matches.setLayoutManager(new LinearLayoutManager(activity));
         adapter = new HomeAdapter(activity, new HomeAdapter.ItemClick() {
@@ -85,17 +87,21 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                 else i = new Intent(activity, MatchActivity.class);
                 i.putExtra(Utils.EXTRA_MATCHE_ID, matchId);
                 startActivity(i);
-               activity. overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+                activity.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
             }
         });
         rv_matches.setAdapter(adapter);
-        tvCreate = (obu.ckt.cricket.comon.RegularTextView) view.findViewById(R.id.tv_createMatch_home);
         tvCreate.setOnClickListener(this);
+        tvHistory.setOnClickListener(this);
         pref = SharePref.getInstance(activity);
         layer = DataLayer.getInstance(activity);
         user = layer.getUser(pref);
         db = new DatabaseHandler(activity);
-        recycler();
+        if (!getArguments().getString(BUNDLE).equalsIgnoreCase("progress")) {
+            tvCreate.setVisibility(View.GONE);
+            tvHistory.setVisibility(View.GONE);
+            recycler();
+        }
     }
 
     private void recycler() {
@@ -103,7 +109,7 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
             @Override
             public void success(List<Match> matches) {
                 matchList.clear();
-                if (getArguments().getString(BUNDLE).equalsIgnoreCase("progress"))
+               /* if (getArguments().getString(BUNDLE).equalsIgnoreCase("progress"))
                     for (Match match : matches) {
                         if (!match.result.equalsIgnoreCase("Completed")) {
                             matchList.add(match);
@@ -115,7 +121,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                             matchList.add(match);
                         }
                     }
-                }
+                }*/
+                matchList.addAll(matches);
                 adapter.setMatchList(matchList);
                 adapter.notifyDataSetChanged();
             }
@@ -132,6 +139,9 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.tv_createMatch_home:
                 createMatchDialog(activity);
+                break;
+            case R.id.tv_History_home:
+                ((HomeActivity) activity).addFragment(QuickFragment.newInstance("Completed"));
                 break;
         }
     }
@@ -174,9 +184,10 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void success(int matchId) {
                                 dialog.dismiss();
-                                Intent i = new Intent(activity, MatchActivity.class);
+                                /*Intent i = new Intent(activity, MatchActivity.class);
                                 i.putExtra(Utils.EXTRA_MATCHE_ID, String.valueOf(matchId));
-                                startActivity(i);
+                                startActivity(i);*/
+                                ((HomeActivity) activity).addFragment(QuickFragment.newInstance("Completed"));
                                 //recycler();
                             }
 
@@ -198,6 +209,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        recycler();
+        if (!getArguments().getString(BUNDLE).equalsIgnoreCase("progress")) {
+            recycler();
+        }
     }
 }

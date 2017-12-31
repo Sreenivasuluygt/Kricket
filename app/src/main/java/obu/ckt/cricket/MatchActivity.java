@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +35,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     SelectPlayerDialog dialog = new SelectPlayerDialog(MatchActivity.this);
     private TextView tvDot, tv1, tv2, tv3, tv4, tv5, tv6, tvNoBall, tvWide, tvBuys, tvLb, tvOut, tvRunOut, tvOverThrow;
     private TextView tvInning1, tvInnings2, tvB1, tvB2, tvB1Runs, tvB1Balls, tvB2Runs, tvB2Balls, tvB1s4s, tvB1s6s, tvB2s4s, tvB2s6s,
-            tvChangeStriker, tvBowler, tvBowlerOvers, tvBowlerRuns, tvChangeBowler, tvScore, tvOvers, tvMatchHeading, tvRunsAdded, tvThisOver;
+            tvChangeStriker, tvBowler, tvBowlerOvers, tvBowlerRuns, tvBowlerWickets, tvChangeBowler, tvScore, tvOvers, tvMatchHeading, tvDate, tvRunsAdded, tvThisOver;
     private Button btnOk, btnClear, btnUndo;
     private String regexStr = "^[0-9]*$";
     private DatabaseHandler db;
@@ -91,11 +90,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         tvChangeStriker = (TextView) findViewById(R.id.tv_changeStriker_match);
         tvBowler = (TextView) findViewById(R.id.tv_bowlerName_match);
         tvBowlerRuns = (TextView) findViewById(R.id.tv_bowlerRuns_match);
+        tvBowlerWickets = (TextView) findViewById(R.id.tv_bowlerWickets_match);
         tvBowlerOvers = (TextView) findViewById(R.id.tv_bowlerOvers_match);
         tvChangeBowler = (TextView) findViewById(R.id.tv_changeBowler_match);
         tvScore = (TextView) findViewById(R.id.tv_score_match);
         tvOvers = (TextView) findViewById(R.id.tv_overs_match);
         tvMatchHeading = (TextView) findViewById(R.id.tv_matchhHeading_match);
+        tvDate = (TextView) findViewById(R.id.tv_date_match);
         btnClear = (Button) findViewById(R.id.btn_clear_match);
         btnUndo = (Button) findViewById(R.id.btn_undo_match);
         btnOk = (Button) findViewById(R.id.btn_ok_match);
@@ -131,7 +132,8 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private void getData() {
         try {
             match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
-            tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB) + " " + Utils.getCurrentDate());
+            tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
+            tvDate.setText(Utils.getCurrentDate());
             if (match.result.equalsIgnoreCase("created"))
                 matchJson = new JSONObject(getDataFromFile());
             else matchJson = new JSONObject(match.json);
@@ -140,6 +142,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             matchJson.put("1stBatting", dummy.getString("1stBatting"));
             matchJson.put("overs", dummy.getString("overs"));
             loadData();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -200,6 +203,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     inningsJson = matchJson.getJSONObject("2ndInnings");
                     loadInning(inningsJson);
                     findViewById(R.id.runs_Layout_match).setVisibility(View.GONE);
+                    btnUndo.setVisibility(View.GONE);
                     break;
             }
         } catch (Exception e) {
@@ -240,12 +244,14 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             tvBowler.setText("");
             tvBowlerOvers.setText("");
             tvBowlerRuns.setText("");
+            tvBowlerWickets.setText("");
             for (int i = 0; i < dummy.length(); i++) {
                 JSONArray jArr = dummy.getJSONArray(i);
                 if (jArr.get(3).equals(Utils.JSON_BOWLING)) {
                     tvBowler.setText(jArr.getString(0));
                     tvBowlerOvers.setText(jArr.getString(2));
                     tvBowlerRuns.setText(jArr.getString(1));
+                    tvBowlerWickets.setText(jArr.getString(4));
                 }
 
             }
@@ -253,6 +259,10 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             // tvThisOver.setText("This Over : " + inningsJson.getString("thisOver").replace("/", " "));
             addBallToLayout(inningsJson.getJSONArray("thisOver"));
             tvOvers.setText(inningsJson.getString("overs") + "(" + matchJson.getString("overs") + ")");
+            if (!Utils.getText(tvB1).contains("*") && !Utils.getText(tvB2).contains("*") &&
+                    !Utils.getText(tvScore).contains("/10")) {
+                addStriker();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -455,7 +465,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                 if (lastwicArr.getString(lastwicArr.length() - 1).equals(batsmenArr.getJSONArray(j).getString(0))) {
                     position = j;
                     isLastWicketStrike = batsmenArr.getJSONArray(j).length() == 8;
-                    lastwicArr.remove(lastwicArr.length()-1);
+                    lastwicArr.remove(lastwicArr.length() - 1);
                     break;
                 }
             }
@@ -722,6 +732,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             removeBallToOvers();
             strikerNotOut();
             removeBallToBatmen(1, 0);
+            removeWickerToBowler();
             String[] str = inningsJson.getString("score").split("/");
             inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) - 1));
         } catch (Exception e) {
@@ -819,6 +830,25 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+
+    private void removeWickerToBowler() {
+        try {
+            JSONArray bowlersArr = inningsJson.getJSONArray("bowler");
+            for (int i = 0; i < bowlersArr.length(); i++) {
+                JSONArray bowArr = bowlersArr.getJSONArray(i);
+                if (bowArr.get(3).equals(Utils.JSON_BOWLING)) {
+                    bowArr.put(4, bowArr.getInt(4) - 1);
+                    bowlersArr.put(i, bowArr);
+                }
+            }
+            inningsJson.put("bowler", bowlersArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     private void removeBallToOvers() {
         try {
             double o = inningsJson.getDouble("overs") - .1;
@@ -888,6 +918,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             public void selected(int pos) {
                 try {
                     inningsJson.getJSONArray("bowler").getJSONArray(pos).put(3, 1);
+                    inningsJson.put("lastBowled", tvBowler.getText().toString());
                     loadInning(inningsJson);
                     Log.e("", "");
                 } catch (Exception e) {
@@ -1102,7 +1133,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         matchJson.put("date", Utils.getCurrentDate());
                         match.json = matchJson.toString();
                         match.result = "Completed";
-                        Utils.singleAlertDialog(MatchActivity.this, "Match completed");
+                        Utils.congratulations(MatchActivity.this, matchJson.getString("won"));
                     } else {
                         inningsJson.put("thisOver", new JSONArray());
                         matchJson.put("1stInnings", inningsJson);
@@ -1165,16 +1196,34 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
         try {
             tvChangeBowler.setEnabled(true);
             JSONArray bowlersArr = inningsJson.getJSONArray("bowler");
-            boolean addedCurrentBowler = false;
+            int bowledLast = 0;
             for (int i = 0; i < bowlersArr.length(); i++) {
                 JSONArray jArr = bowlersArr.getJSONArray(i);
+                if (jArr.get(0).equals(inningsJson.getString("lastBowled"))) {
+                    jArr.put(3, 0);
+                    bowlersArr.put(i, jArr);
+                    bowledLast = i;
+                    break;
+                }
+
+                /* JSONArray jArr = bowlersArr.getJSONArray(i);
                 if (jArr.get(0).equals(inningsJson.getString("lastBowled"))) {
                     jArr.put(3, 0);
                 } else if (!addedCurrentBowler) {
                     jArr.put(3, 1);
                     addedCurrentBowler = true;
                 }
-                bowlersArr.put(i, jArr);
+                bowlersArr.put(i, jArr);*/
+            }
+
+            for (int i = 0; i < bowlersArr.length(); i++) {
+                bowlersArr.getJSONArray(i).put(3, 0);
+            }
+
+            if (bowledLast != 10) {
+                bowlersArr.getJSONArray(bowledLast + 1).put(3, 1);
+            } else {
+                bowlersArr.getJSONArray(0).put(3, 1);
             }
             inningsJson.put("bowler", bowlersArr);
         } catch (JSONException e) {
@@ -1188,6 +1237,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
             addBallToOvers();
             addBallToBatmen(1, 0);
             strikerOut();
+            addWickerToBowler();
             String[] str = inningsJson.getString("score").split("/");
             inningsJson.put("score", str[0] + "/" + String.valueOf(Integer.parseInt(str[1]) + 1));
             addThisOversRuns(etData);
@@ -1340,7 +1390,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     if (batArr.get(4).equals(Utils.JSON_STRIKING)) {
                         batArr.put(4, 0);
                         isStrikerChecked = true;
-                    } else {
+                    } else if (!isNonStrikerChecked) {
                         batArr.put(4, 1);
                         isNonStrikerChecked = true;
                     }
@@ -1478,6 +1528,23 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     }
                     bowArr.put(2, o);
                     bowArr.put(1, bowArr.getInt(1) + runs);
+                    bowlersArr.put(i, bowArr);
+                }
+            }
+            inningsJson.put("bowler", bowlersArr);
+            Log.e(TAG, matchJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    void addWickerToBowler() {
+        try {
+            JSONArray bowlersArr = inningsJson.getJSONArray("bowler");
+            for (int i = 0; i < bowlersArr.length(); i++) {
+                JSONArray bowArr = bowlersArr.getJSONArray(i);
+                if (bowArr.get(3).equals(Utils.JSON_BOWLING)) {
+                    bowArr.put(4, bowArr.getInt(4) + 1);
                     bowlersArr.put(i, bowArr);
                 }
             }
