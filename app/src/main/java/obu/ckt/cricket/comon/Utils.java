@@ -3,6 +3,8 @@ package obu.ckt.cricket.comon;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
@@ -148,6 +150,14 @@ public class Utils {
 
     }
 
+    public static String getUsernameFromEmail(String email) {
+        if (email.contains("@")) {
+            return email.split("@")[0];
+        } else {
+            return email;
+        }
+    }
+
     public static String getCurrentDate() {
         SimpleDateFormat df = new SimpleDateFormat("MMM dd,yyyy");
         String formattedDate = df.format(Calendar.getInstance().getTime());
@@ -156,5 +166,12 @@ public class Utils {
 
     public interface Logout {
         void click();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

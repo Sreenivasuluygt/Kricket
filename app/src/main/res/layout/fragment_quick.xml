@@ -9,6 +9,7 @@
     tools:context="obu.ckt.cricket.fragments.QuickFragment">
 
     <obu.ckt.cricket.comon.RegularTextView
+        android:id="@+id/tv_noMatches"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"

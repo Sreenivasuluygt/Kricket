@@ -43,6 +43,7 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     private DataLayer dl;
     private Match match;
     private String TAG = "MatchActivity";
+    private boolean isDialogOpen = false;
     //["batsmen1", 0, 0, "notout", 1]}  refers[name,runs,balls,out,striking]
 
 
@@ -131,17 +132,32 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     private void getData() {
         try {
-            match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
-            tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
-            tvDate.setText(Utils.getCurrentDate());
-            if (match.result.equalsIgnoreCase("created"))
-                matchJson = new JSONObject(getDataFromFile());
-            else matchJson = new JSONObject(match.json);
-            JSONObject dummy = new JSONObject(match.json);
-            matchJson.put("toss", dummy.getString("toss"));
-            matchJson.put("1stBatting", dummy.getString("1stBatting"));
-            matchJson.put("overs", dummy.getString("overs"));
-            loadData();
+            db.getMatchInfo(prefs.getValue(Utils.SHARED_USERID), getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID), new DatabaseHandler.matchDetails() {
+                @Override
+                public void onSuccess(Match m) {
+                    try {
+                        match = m;
+                        tvMatchHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
+                        tvDate.setText(Utils.getCurrentDate());
+                        if (match.result.equalsIgnoreCase("created"))
+                            matchJson = new JSONObject(getDataFromFile());
+                        else matchJson = new JSONObject(match.json);
+                        JSONObject dummy = new JSONObject(match.json);
+                        matchJson.put("toss", dummy.getString("toss"));
+                        matchJson.put("1stBatting", dummy.getString("1stBatting"));
+                        matchJson.put("overs", dummy.getString("overs"));
+                        loadData();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -271,6 +287,10 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+        if (!Utils.isNetworkAvailable(MatchActivity.this)) {
+            Utils.singleAlertDialog(MatchActivity.this, "Your not connected to internet, please connect to internet and try again");
+            return;
+        }
         switch (v.getId()) {
             case R.id.tv_dot_match:
                 setDataToEdiText("0");
@@ -398,9 +418,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     match.json = matchJson.toString();
                     match.result = "Completed";
                 }
-                db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                db.insertMatch(match, match.matchId, new CreateMatch() {
                     @Override
-                    public void success(int matchId) {
+                    public void success(String matchId) {
 
                     }
 
@@ -929,23 +949,28 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void addStriker() {
-        dialog.selectPlayer(inningsJson, "Select Who'se on strike?", new SelectPlayerDialog.OnSelected() {
-            @Override
-            public void selected(int position) {
-                //inningsJson = innings;
-                try {
-                    JSONArray jArr = inningsJson.getJSONArray("batsmen");
-                    //removing all from striker
-                    for (int i = 0; i < jArr.length(); i++)
-                        jArr.getJSONArray(i).put(4, 0);
-                    inningsJson.put("batsmen", jArr);
-                    inningsJson.getJSONArray("batsmen").getJSONArray(position).put(4, 1);
-                    loadInning(inningsJson);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        //Some times too many dialogs gets Open
+        if (!isDialogOpen) {
+            isDialogOpen = true;
+            dialog.selectPlayer(inningsJson, "Select Who'se on strike?", new SelectPlayerDialog.OnSelected() {
+                @Override
+                public void selected(int position) {
+                    //inningsJson = innings;
+                    try {
+                        JSONArray jArr = inningsJson.getJSONArray("batsmen");
+                        //removing all from striker
+                        for (int i = 0; i < jArr.length(); i++)
+                            jArr.getJSONArray(i).put(4, 0);
+                        inningsJson.put("batsmen", jArr);
+                        inningsJson.getJSONArray("batsmen").getJSONArray(position).put(4, 1);
+                        loadInning(inningsJson);
+                        isDialogOpen = false;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void validateEditText() {
@@ -1077,9 +1102,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         match.result = "SecondInnings";
                         Utils.singleAlertDialog(MatchActivity.this, "First innings completed");
                     }
-                    db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                    db.insertMatch(match, match.matchId, new CreateMatch() {
                         @Override
-                        public void success(int matchId) {
+                        public void success(String matchId) {
 
                         }
 
@@ -1102,9 +1127,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     match.result = "Completed";
                     //Utils.singleAlertDialog(MatchActivity.this, "Match completed");
                     Utils.congratulations(MatchActivity.this, matchJson.getString("won"));
-                    db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                    db.insertMatch(match, match.matchId, new CreateMatch() {
                         @Override
-                        public void success(int matchId) {
+                        public void success(String matchId) {
 
                         }
 
@@ -1141,9 +1166,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                         match.result = "SecondInnings";
                         Utils.singleAlertDialog(MatchActivity.this, "First innings completed");
                     }
-                    db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                    db.insertMatch(match, match.matchId, new CreateMatch() {
                         @Override
-                        public void success(int matchId) {
+                        public void success(String matchId) {
 
                         }
 
@@ -1173,9 +1198,9 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
                     match.json = matchJson.toString();
                     match.result = "Completed";
                 }
-                db.insertMatch(match, Long.parseLong(match.matchId), new CreateMatch() {
+                db.insertMatch(match, match.matchId, new CreateMatch() {
                     @Override
-                    public void success(int matchId) {
+                    public void success(String matchId) {
 
                     }
 

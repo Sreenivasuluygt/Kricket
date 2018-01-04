@@ -5,6 +5,6 @@ package obu.ckt.cricket.interfaces;
  */
 
 public interface CreateMatch {
-    void success(int matchId);
+    void success(String matchId);
     void failure();
 }

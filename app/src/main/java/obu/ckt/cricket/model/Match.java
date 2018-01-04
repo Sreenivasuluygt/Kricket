@@ -15,4 +15,7 @@ public class Match {
         this.json = json;
         this.result = result;
     }
+    public Match(){
+
+    }
 }

@@ -72,7 +72,7 @@ public class HomeActivity extends AppCompatActivity
     public void addFragment(Fragment fragment) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.setCustomAnimations(R.anim.enter_from_left, R.anim.exit_to_right, R.anim.enter_from_right, R.anim.exit_to_left);
+        fragmentTransaction.setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right);
         fragmentTransaction.add(R.id.container_home, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

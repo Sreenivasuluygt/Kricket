@@ -2,6 +2,7 @@ package obu.ckt.cricket.fragments;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -81,13 +82,18 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
         adapter = new HomeAdapter(activity, new HomeAdapter.ItemClick() {
             @Override
             public void onClick(String matchId, String status) {
-                Intent i;
-                if (status.equalsIgnoreCase("completed"))
-                    i = new Intent(activity, MatchHistoryActivity.class);
-                else i = new Intent(activity, MatchActivity.class);
-                i.putExtra(Utils.EXTRA_MATCHE_ID, matchId);
-                startActivity(i);
-                activity.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+                if (!Utils.isNetworkAvailable(activity)) {
+                    Utils.singleAlertDialog(activity, "Your not connected to internet, please connect to internet and try again");
+                } else {
+                    Intent i;
+                    if (status.equalsIgnoreCase("completed"))
+                        i = new Intent(activity, MatchHistoryActivity.class);
+                    else i = new Intent(activity, MatchActivity.class);
+                    i.putExtra(Utils.EXTRA_MATCHE_ID, matchId);
+                    startActivity(i);
+                    activity.overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
+                }
+
             }
         });
         rv_matches.setAdapter(adapter);
@@ -105,10 +111,15 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
     }
 
     private void recycler() {
+        final ProgressDialog pDialog = new ProgressDialog(activity);
+        pDialog.setMessage("Loading.");
+        view.findViewById(R.id.tv_noMatches).setVisibility(View.GONE);
+        pDialog.show();
         db.getMatches(user.userId, new MatchHistory() {
             @Override
             public void success(List<Match> matches) {
                 matchList.clear();
+                pDialog.dismiss();
                /* if (getArguments().getString(BUNDLE).equalsIgnoreCase("progress"))
                     for (Match match : matches) {
                         if (!match.result.equalsIgnoreCase("Completed")) {
@@ -122,6 +133,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                         }
                     }
                 }*/
+                if (matches.size() == 0)
+                    view.findViewById(R.id.tv_noMatches).setVisibility(View.VISIBLE);
                 matchList.addAll(matches);
                 adapter.setMatchList(matchList);
                 adapter.notifyDataSetChanged();
@@ -129,20 +142,25 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void failure() {
-
+                pDialog.dismiss();
+                view.findViewById(R.id.tv_noMatches).setVisibility(View.VISIBLE);
             }
         });
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tv_createMatch_home:
-                createMatchDialog(activity);
-                break;
-            case R.id.tv_History_home:
-                ((HomeActivity) activity).addFragment(QuickFragment.newInstance("Completed"));
-                break;
+        if (Utils.isNetworkAvailable(activity)) {
+            switch (view.getId()) {
+                case R.id.tv_createMatch_home:
+                    createMatchDialog(activity);
+                    break;
+                case R.id.tv_History_home:
+                    ((HomeActivity) activity).addFragment(QuickFragment.newInstance("Completed"));
+                    break;
+            }
+        } else {
+            Utils.singleAlertDialog(activity, "Your not connected to internet, please connect to internet and try again");
         }
     }
 
@@ -178,17 +196,13 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                         obj.put("toss", Utils.getText(etToss));
                         obj.put("1stBatting", Utils.getText(et1stTeam));
                         obj.put("overs", Utils.getText(etOvers));
-                        match = new Match("", user.userId, Utils.getText(et1stTeam)
+                        match = new Match(null, user.userId, Utils.getText(et1stTeam)
                                 , Utils.getText(et2ndTeam), obj.toString(), "created");
-                        db.insertMatch(match, -1, new CreateMatch() {
+                        db.insertMatch(match, null, new CreateMatch() {
                             @Override
-                            public void success(int matchId) {
+                            public void success(String matchId) {
                                 dialog.dismiss();
-                                /*Intent i = new Intent(activity, MatchActivity.class);
-                                i.putExtra(Utils.EXTRA_MATCHE_ID, String.valueOf(matchId));
-                                startActivity(i);*/
                                 ((HomeActivity) activity).addFragment(QuickFragment.newInstance("Completed"));
-                                //recycler();
                             }
 
                             @Override
@@ -209,8 +223,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        if (!getArguments().getString(BUNDLE).equalsIgnoreCase("progress")) {
+       /* if (!getArguments().getString(BUNDLE).equalsIgnoreCase("progress")) {
             recycler();
-        }
+        }*/
     }
 }

@@ -6,9 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import obu.ckt.cricket.comon.DBConstants;
 import obu.ckt.cricket.interfaces.CreateMatch;
 import obu.ckt.cricket.interfaces.Login;
 import obu.ckt.cricket.interfaces.MatchHistory;
@@ -54,9 +61,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Clo;
         return id;
     }
+    public void insertUserWithUDID(User user) {
+        FirebaseDatabase.getInstance().getReference().child(DBConstants.USER).child(user.userId).setValue(user);
+    }
 
-    public long insertMatch(Match match,long id, CreateMatch create) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void insertMatch(Match match, String id, CreateMatch create) {
+        /*SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put("userId", match.userId);
@@ -73,8 +83,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Clo;
         if (id > 0) {
             create.success((int) id);
+        }*/
+        if (match.matchId == null) {
+            DatabaseReference matchRef = FirebaseDatabase.getInstance().getReference(DBConstants.MATCHES).child(match.userId);
+            match.matchId = matchRef.push().getKey();
+            matchRef.child(match.matchId).setValue(match);
+        }else {
+            DatabaseReference matchRef = FirebaseDatabase.getInstance().getReference(DBConstants.MATCHES).child(match.userId);
+            matchRef.child(match.matchId).setValue(match);
         }
-        return id;
+        create.success(match.matchId);
     }
 
     public boolean isEmailExists(String email) {
@@ -97,6 +115,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         return isEmailExists;
     }
+
     public String getUserId(String email) {
         String userId = "";
         // Select All Query
@@ -109,7 +128,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(2).equals(email)) {
-                    userId=cursor.getString(0);
+                    userId = cursor.getString(0);
                     break;
                 }
             } while (cursor.moveToNext());
@@ -138,9 +157,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         else login.failure();
     }
 
-    public void getMatches(String userId, MatchHistory matchHistory) {
-        List<Match> matchList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM matches where userId=" + userId+" order by matchId desc";
+    public void getMatches(final String userId, final MatchHistory matchHistory) {
+        final List<Match> matchList = new ArrayList<>();
+        final DatabaseReference matchRef = FirebaseDatabase.getInstance().getReference(DBConstants.MATCHES).child(userId);
+
+        matchRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                matchList.clear();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Match track = postSnapshot.getValue(Match.class);
+                    matchList.add(track);
+                }
+                if (matchList.size() > 0)
+                    matchHistory.success(matchList);
+                else matchHistory.failure();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                matchHistory.failure();
+            }
+        });
+
+
+      /*  String selectQuery = "SELECT  * FROM matches where userId=" + userId + " order by matchId desc";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -151,14 +193,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         cursor.getString(4), cursor.getString(5));
                 matchList.add(match);
             } while (cursor.moveToNext());
-        }
-        if (matchList.size() > 0)
-            matchHistory.success(matchList);
-        else matchHistory.failure();
+        }*/
     }
 
 
-    public Match getMatchInfo(String stringExtra) {
+    public void getMatchInfo(String userId, String matchId, final matchDetails matchInterface) {
+
+
+        final DatabaseReference matchRef = FirebaseDatabase.getInstance().getReference(DBConstants.MATCHES).child(userId).child(matchId);
+
+
+        matchRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Match match = dataSnapshot.getValue(Match.class);
+                matchInterface.onSuccess(match);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                matchInterface.onFailure();
+            }
+        });
+    }
+
+    /*public Match getMatchInfo(String stringExtra) {
         Match match = null;
 
         String selectQuery = "SELECT  * FROM matches where matchId=" + stringExtra;
@@ -173,5 +232,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             } while (cursor.moveToNext());
         }
         return match;
+    }*/
+
+    public interface matchDetails {
+        void onSuccess(Match match);
+
+        void onFailure();
     }
 }

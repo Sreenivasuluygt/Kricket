@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -20,12 +19,22 @@ import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import obu.ckt.cricket.comon.DBConstants;
 import obu.ckt.cricket.comon.SharePref;
 import obu.ckt.cricket.comon.Utils;
 import obu.ckt.cricket.data.DataLayer;
 import obu.ckt.cricket.database.DatabaseHandler;
-import obu.ckt.cricket.fragments.QuickFragment;
 import obu.ckt.cricket.interfaces.Login;
 import obu.ckt.cricket.model.User;
 
@@ -38,6 +47,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button btnLogin;
     private SharePref prefs;
     private DataLayer dLayer;
+
+    private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
+
+    private DatabaseReference userReferance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,39 +91,96 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setOnClickListener(this);
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        currentUser = mAuth.getCurrentUser();
+    }
+
+
+    public void signInUser(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        currentUser = mAuth.getCurrentUser();
+                        if (task.isSuccessful()) {
+                            userReferance = FirebaseDatabase.getInstance().getReference(DBConstants.USER)
+                                    .child(currentUser.getUid());
+
+                            userReferance.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    /*List<User> uList = new ArrayList<>();
+                                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                                        User track = postSnapshot.getValue(User.class);
+                                        uList.add(track);
+                                    }*/
+                                    User user = dataSnapshot.getValue(User.class);
+                                    dLayer.saveUser(prefs, user);
+                                    openHomeActivity();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                    Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
+                                }
+                            });
+
+                            //dbLogin();
+
+                        } else {
+                            Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
+                        }
+                    }
+                });
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sign_in_button:
-                signIn();
+                if (Utils.isNetworkAvailable(LoginActivity.this)) {
+                    signIn();
+                } else {
+                    Utils.singleAlertDialog(LoginActivity.this, "Your not connected to internet, please connect to internet and try again");
+                }
+
                 break;
             case R.id.tv_signup_login:
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
                 overridePendingTransition(R.anim.enter_from_right, R.anim.exit_to_left);
                 break;
             case R.id.btn_log_login:
-                dbLogin();
+                if (Utils.isNetworkAvailable(LoginActivity.this)) {
+                    login();
+                } else {
+                    Utils.singleAlertDialog(LoginActivity.this, "Your not connected to internet, please connect to internet and try again");
+                }
                 break;
             case R.id.tv_skip_login:
-                skipLogin();
+                if (Utils.isNetworkAvailable(LoginActivity.this)) {
+                    skipLogin();
+                } else {
+                    Utils.singleAlertDialog(LoginActivity.this, "Your not connected to internet, please connect to internet and try again");
+                }
                 break;
         }
     }
 
     private void skipLogin() {
-        long userId = 0;
+
         String UDID = Utils.udid(LoginActivity.this);
-        if (!db.isEmailExists(UDID)) {
-            userId = db.insertUser(UDID, UDID, UDID);
-        } else userId = Long.parseLong(db.getUserId(UDID));
-        User user = new User(String.valueOf(userId), UDID, UDID, UDID);
+        User user = new User(UDID, "user", "user@gmail.com", "123456");
+        db.insertUserWithUDID(user);
         dLayer.saveUser(prefs, user);
         openHomeActivity();
     }
 
-    private void dbLogin() {
+    private void login() {
         if (etEmail.getText().toString().isEmpty())
             Snackbar.make(btnLogin, "Please enter email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().isEmpty())
@@ -118,20 +189,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Snackbar.make(btnLogin, "Please enter valid email", Snackbar.LENGTH_SHORT).show();
         else if (etPassword.getText().toString().length() < 4)
             Snackbar.make(btnLogin, "Password should be more then 4 characters", Snackbar.LENGTH_SHORT).show();
-        else
-            db.validateLogin(etEmail.getText().toString(),
-                    etPassword.getText().toString(), new Login() {
-                        @Override
-                        public void success(User user) {
-                            dLayer.saveUser(prefs, user);
-                            openHomeActivity();
-                        }
+        else signInUser(etEmail.getText().toString(), etPassword.getText().toString());
 
-                        @Override
-                        public void failure() {
-                            Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
-                        }
-                    });
+    }
+
+    private void dbLogin() {
+        db.validateLogin(etEmail.getText().toString(),
+                etPassword.getText().toString(), new Login() {
+                    @Override
+                    public void success(User user) {
+                        dLayer.saveUser(prefs, user);
+                        openHomeActivity();
+                    }
+
+                    @Override
+                    public void failure() {
+                        String name;
+                        name = currentUser.getDisplayName() != null ? currentUser.getDisplayName() :
+                                Utils.getUsernameFromEmail(etEmail.getText().toString());
+                        db.insertUser(name, etEmail.getText().toString(),
+                                etPassword.getText().toString());
+                        dbLogin();
+                    }
+                });
     }
 
     private void openHomeActivity() {
@@ -167,11 +247,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.e(TAG, acct.getEmail());
-            long userId = 0;
-            if (!db.isEmailExists(acct.getEmail())) {
-                userId = db.insertUser(acct.getDisplayName(), acct.getEmail(), acct.getEmail());
-            } else userId = Long.parseLong(db.getUserId(acct.getEmail()));
-            User user = new User(String.valueOf(userId), acct.getDisplayName(), acct.getEmail(), acct.getEmail());
+            User user = new User(String.valueOf(acct.getId()), acct.getDisplayName(), acct.getEmail(), acct.getEmail());
+            db.insertUserWithUDID(user);
             dLayer.saveUser(prefs, user);
             openHomeActivity();
             //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));

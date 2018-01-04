@@ -15,14 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "264037988723-dl2umurlhqmq7a0moe9ddi5vau8666qb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.app.cricketapp",
-            "certificate_hash": "24cf7a22b62101a5a77e34f8890ac709f3cfaebc"
-          }
-        },
-        {
           "client_id": "264037988723-cgfrpmm1otgafraan8ltqg5ua5lh9d8s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

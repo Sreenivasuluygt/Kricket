@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import obu.ckt.cricket.adapters.HistoryAdapter;
+import obu.ckt.cricket.comon.SharePref;
 import obu.ckt.cricket.comon.Utils;
 import obu.ckt.cricket.database.DatabaseHandler;
 import obu.ckt.cricket.model.Match;
@@ -26,6 +27,7 @@ public class MatchHistoryActivity extends AppCompatActivity {
     private RecyclerView rvHistory;
     private List<MatchHistory> histList = new ArrayList<>();
     private JSONObject jObj = new JSONObject();
+    private SharePref pref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +42,31 @@ public class MatchHistoryActivity extends AppCompatActivity {
             tvResult = (TextView) findViewById(R.id.tv_result_history);
             rvHistory = (RecyclerView) findViewById(R.id.recycler_history);
             db = new DatabaseHandler(this);
-            match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
-            jObj = new JSONObject(match.json);
-            tvHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
-            tvResult.setText("Won : " + Utils.getTeamName(jObj.getString("won")) + " on " + jObj.getString("date"));
-            getHistLit();
-            loadRecycler();
+            pref = SharePref.getInstance(this);
+            // match = db.getMatchInfo(getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID));
+
+            db.getMatchInfo(pref.getValue(Utils.SHARED_USERID), getIntent().getStringExtra(Utils.EXTRA_MATCHE_ID), new DatabaseHandler.matchDetails() {
+                @Override
+                public void onSuccess(Match m) {
+                    try {
+                        match = m;
+                        jObj = new JSONObject(match.json);
+                        tvHeading.setText(Utils.getTeamName(match.teamA) + " VS " + Utils.getTeamName(match.teamB));
+                        tvResult.setText("Won : " + Utils.getTeamName(jObj.getString("won")) + " on " + jObj.getString("date"));
+                        getHistLit();
+                        loadRecycler();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
