@@ -287,10 +287,13 @@ public class MatchActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (!Utils.isNetworkAvailable(MatchActivity.this)) {
+        if (false) {
             Utils.singleAlertDialog(MatchActivity.this, "Your not connected to internet, please connect to internet and try again");
             return;
-        }
+        } /*if (!Utils.isNetworkAvailable(MatchActivity.this)) {
+            Utils.singleAlertDialog(MatchActivity.this, "Your not connected to internet, please connect to internet and try again");
+            return;
+        }*/
         switch (v.getId()) {
             case R.id.tv_dot_match:
                 setDataToEdiText("0");

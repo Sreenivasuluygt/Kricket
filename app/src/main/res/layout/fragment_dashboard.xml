@@ -83,7 +83,7 @@
                 android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_weight="0.25"
                 android:gravity="center"
-                android:text="Comming soon"
+                android:text="Coming soon"
                 android:textSize="@dimen/_12sdp" />
         </RelativeLayout>
 

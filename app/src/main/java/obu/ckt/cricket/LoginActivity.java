@@ -1,5 +1,6 @@
 package obu.ckt.cricket;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -43,7 +45,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     DatabaseHandler db;
     private EditText etEmail, etPassword;
-    private obu.ckt.cricket.comon.RegularTextView tvSignUp, tvSkip;
+    private TextView tvSignUp, tvSkip;
     private Button btnLogin;
     private SharePref prefs;
     private DataLayer dLayer;
@@ -63,8 +65,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void initControls() {
         etEmail = (EditText) findViewById(R.id.et_email_login);
         etPassword = (EditText) findViewById(R.id.et_password_login);
-        tvSignUp = (obu.ckt.cricket.comon.RegularTextView) findViewById(R.id.tv_signup_login);
-        tvSkip = (obu.ckt.cricket.comon.RegularTextView) findViewById(R.id.tv_skip_login);
+        tvSignUp =  findViewById(R.id.tv_signup_login);
+        tvSkip =  findViewById(R.id.tv_skip_login);
         btnLogin = (Button) findViewById(R.id.btn_log_login);
 
 
@@ -102,6 +104,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     public void signInUser(String email, String password) {
+        final ProgressDialog pDialog=new ProgressDialog(LoginActivity.this);
+        pDialog.setMessage("Please wait.");
+        pDialog.show();
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -119,6 +124,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         User track = postSnapshot.getValue(User.class);
                                         uList.add(track);
                                     }*/
+                                    pDialog.dismiss();
                                     User user = dataSnapshot.getValue(User.class);
                                     dLayer.saveUser(prefs, user);
                                     openHomeActivity();
@@ -126,6 +132,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 @Override
                                 public void onCancelled(DatabaseError databaseError) {
+                                    pDialog.dismiss();
                                     Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
                                 }
                             });
@@ -133,6 +140,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             //dbLogin();
 
                         } else {
+                            pDialog.dismiss();
                             Utils.singleAlertDialog(LoginActivity.this, "Invalid login details");
                         }
                     }

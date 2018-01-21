@@ -4,10 +4,10 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.app.cricketapp"
+        applicationId "com.obu.opl"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 1
+        versionCode 1022001
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true

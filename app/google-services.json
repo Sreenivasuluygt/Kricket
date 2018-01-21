@@ -1,43 +1,43 @@
 {
   "project_info": {
-    "project_number": "264037988723",
-    "firebase_url": "https://cricketcalci.firebaseio.com",
-    "project_id": "cricketcalci",
-    "storage_bucket": "cricketcalci.appspot.com"
+    "project_number": "802283906974",
+    "firebase_url": "https://kricketcalci.firebaseio.com",
+    "project_id": "kricketcalci",
+    "storage_bucket": "kricketcalci.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:264037988723:android:003807c9003db583",
+        "mobilesdk_app_id": "1:802283906974:android:eed8c42d027a7b73",
         "android_client_info": {
-          "package_name": "com.app.cricketapp"
+          "package_name": "com.obu.opl"
         }
       },
       "oauth_client": [
         {
-          "client_id": "264037988723-dl2umurlhqmq7a0moe9ddi5vau8666qb.apps.googleusercontent.com",
+          "client_id": "802283906974-01tjapg13l2gkj7lb0fo8blkeh78u0m3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.app.cricketapp",
-            "certificate_hash": "24cf7a22b62101a5a77e34f8890ac709f3cfaebc"
+            "package_name": "com.obu.opl",
+            "certificate_hash": "21a7b5249540f2aa0d2a3990c07ccfdb66c537ce"
           }
         },
         {
-          "client_id": "264037988723-cgfrpmm1otgafraan8ltqg5ua5lh9d8s.apps.googleusercontent.com",
+          "client_id": "802283906974-mp7dujmpp5935p0d6gv9hg5ntkdn665d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.app.cricketapp",
-            "certificate_hash": "a4536425715f768c430b72349f87b96bcf0edad9"
+            "package_name": "com.obu.opl",
+            "certificate_hash": "b21e4e88479fe516d6c7b168fc5ff50df3b738d5"
           }
         },
         {
-          "client_id": "264037988723-9aq0v5r6uekvuag0pf47jso4a07eotc1.apps.googleusercontent.com",
+          "client_id": "802283906974-ngblhpp4d63ccn10h6omt2qdiro4pc5c.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCQxOVO-ZOU7vprZJDGfsTuF06huQzzXRI"
+          "current_key": "AIzaSyDBzIa25aSjqjS6yLQtHnWjBVzbBP8xEL0"
         }
       ],
       "services": {
@@ -48,7 +48,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "264037988723-9aq0v5r6uekvuag0pf47jso4a07eotc1.apps.googleusercontent.com",
+              "client_id": "802283906974-ngblhpp4d63ccn10h6omt2qdiro4pc5c.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

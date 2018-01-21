@@ -46,8 +46,8 @@ public class HomeActivity extends AppCompatActivity
         toggle.syncState();
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        RegularTextView name = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(0);
-        RegularTextView mail = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(1);
+        RegularTextView name = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(1);
+        RegularTextView mail = (RegularTextView) ((LinearLayout) navigationView.getHeaderView(0)).getChildAt(2);
         name.setText(dataLayer.getUser(SharePref.getInstance(this)).name);
         mail.setText(dataLayer.getUser(SharePref.getInstance(this)).email);
         addFragment(new DashboardFragment());

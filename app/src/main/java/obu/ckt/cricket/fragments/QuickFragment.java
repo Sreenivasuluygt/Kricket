@@ -21,6 +21,7 @@ import android.widget.EditText;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import obu.ckt.cricket.HomeActivity;
@@ -82,7 +83,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
         adapter = new HomeAdapter(activity, new HomeAdapter.ItemClick() {
             @Override
             public void onClick(String matchId, String status) {
-                if (!Utils.isNetworkAvailable(activity)) {
+               /* if (!Utils.isNetworkAvailable(activity)) {*/
+                if (false) {
                     Utils.singleAlertDialog(activity, "Your not connected to internet, please connect to internet and try again");
                 } else {
                     Intent i;
@@ -136,6 +138,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
                 if (matches.size() == 0)
                     view.findViewById(R.id.tv_noMatches).setVisibility(View.VISIBLE);
                 matchList.addAll(matches);
+
+                Collections.reverse(matchList);
                 adapter.setMatchList(matchList);
                 adapter.notifyDataSetChanged();
             }
@@ -150,7 +154,8 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        if (Utils.isNetworkAvailable(activity)) {
+        /*if (Utils.isNetworkAvailable(activity)) {*/
+        if (true) {
             switch (view.getId()) {
                 case R.id.tv_createMatch_home:
                     createMatchDialog(activity);
@@ -207,7 +212,7 @@ public class QuickFragment extends Fragment implements View.OnClickListener {
 
                             @Override
                             public void failure() {
-
+                                dialog.dismiss();
                             }
                         });
                     }

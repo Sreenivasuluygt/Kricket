@@ -57,7 +57,7 @@
             android:textStyle="bold"
             app:elevation="@dimen/_5sdp" />
 
-        <obu.ckt.cricket.comon.RegularTextView
+        <obu.ckt.cricket.comon.MonTextView
             android:textSize="@dimen/_16sdp"
             android:id="@+id/tv_signup_login"
             android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/_10sdp" />
 
-        <obu.ckt.cricket.comon.RegularTextView
+        <obu.ckt.cricket.comon.MonTextView
             android:textSize="@dimen/_25sdp"
             android:id="@+id/tv_skip_login"
             android:layout_width="wrap_content"
